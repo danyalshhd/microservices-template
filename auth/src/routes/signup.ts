@@ -1,52 +1,35 @@
-import express, { Request, Response } from 'express';
-import { body } from 'express-validator';
-import jwt from 'jsonwebtoken';
-
-import { validateRequest, BadRequestError } from '@dstransaction/common';
-import { User } from '../models/user';
-
+const express = require("express");
 const router = express.Router();
+const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
+const poolData = {
+  UserPoolId: "us-east-1_cBhmA75S1",
+  ClientId: "1kffecgahvsb2cnmg00avkup6h",
+};
 
-router.post(
-  '/api/users/signup',
-  [
-    body('email')
-      .isEmail()
-      .withMessage('Email must be valid'),
-    body('password')
-      .trim()
-      .isLength({ min: 4, max: 20 })
-      .withMessage('Password must be between 4 and 20 characters')
-  ],
-  validateRequest,
-  async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
-    const existingUser = await User.findOne({ email });
-
-    if (existingUser) {
-      throw new BadRequestError('Email in use');
-    }
-
-    const user = User.build({ email, password });
-    await user.save();
-
-    // Generate JWT
-    const userJwt = jwt.sign(
-      {
-        id: user.id,
-        email: user.email
-      },
-      process.env.JWT_KEY!
-    );
-
-    // Store it on session object
-    req.session = {
-      jwt: userJwt
+router.post('/api/users/signup', (req,res) => {
+  try {
+    let { email } = req.body;
+    let { password } = req.body;
+    const emailData = {
+      Name: "email",
+      Value: email,
     };
-
-    res.status(201).send(user);
+    const emailAttribute = new AmazonCognitoIdentity.CognitoUserAttribute(
+      emailData
+    );
+    userPool.signUp(email, password, [emailAttribute], null, (err, data) => {
+      if (err) {
+        console.error(err);
+        res.status(404);
+      }
+      res.send(data);
+    });
+  } catch (error) {
+    console.error(error);
   }
-);
+
+});
 
 export { router as signupRouter };

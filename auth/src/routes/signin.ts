@@ -1,57 +1,50 @@
-import express, { Request, Response } from 'express';
-import { body } from 'express-validator';
-import jwt from 'jsonwebtoken';
-
-import { Password } from '../services/password';
-import { User } from '../models/user';
-import { validateRequest, BadRequestError } from '@dstransaction/common';
-
+const express = require("express");
 const router = express.Router();
+const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
+const poolData = {
+  UserPoolId: "us-east-1_cBhmA75S1",
+  ClientId: "1kffecgahvsb2cnmg00avkup6h",
+};
 
-router.post(
-  '/api/users/signin',
-  [
-    body('email')
-      .isEmail()
-      .withMessage('Email must be valid'),
-    body('password')
-      .trim()
-      .notEmpty()
-      .withMessage('You must supply a password')
-  ],
-  validateRequest,
-  async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
-    const existingUser = await User.findOne({ email });
-    if (!existingUser) {
-      throw new BadRequestError('Invalid credentials');
-    }
 
-    const passwordsMatch = await Password.compare(
-      existingUser.password,
-      password
-    );
-    if (!passwordsMatch) {
-      throw new BadRequestError('Invalid Credentials');
-    }
-
-    // Generate JWT
-    const userJwt = jwt.sign(
-      {
-        id: existingUser.id,
-        email: existingUser.email
-      },
-      process.env.JWT_KEY!
-    );
-
-    // Store it on session object
-    req.session = {
-      jwt: userJwt
+router.post("/api/users/signin", async (req, res) => {
+  try {
+    // console.log("login: ", req.body.email, req.body.password);
+    const loginDetails = {
+      Username: req.body.email,
+      Password: req.body.password,
     };
 
-    res.status(200).send(existingUser);
+    const authDetails = new AmazonCognitoIdentity.AuthenticationDetails(
+      loginDetails
+    );
+
+    const userDetails = {
+      Username: req.body.email,
+      Pool: userPool,
+    };
+
+    const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userDetails);
+    cognitoUser.authenticateUser(authDetails, {
+      onSuccess: function (data) {
+        var accessToken = data.getAccessToken().getJwtToken();
+        // console.log(accessToken);
+        console.log("Success");
+        // res.cookie("data",data);
+        //, {expires: new Date(Date.now() + 90000),}
+        res.send(`Login Successful`).status(200);
+      },
+      onFailure: function (err) {
+        console.log("Failed");
+        res.send(err);
+      },
+    });
+  } catch (error) {
+    console.error(error);
   }
-);
+});
+
 
 export { router as signinRouter };
