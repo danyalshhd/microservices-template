@@ -14,7 +14,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: auth-srv
+                name: userdata-srv
                 port:
                   number: 3000
           - path: /api/transactions/?(.*)

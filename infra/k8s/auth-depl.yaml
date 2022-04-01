@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-depl
+  name: userdata-depl
 spec:
   replicas: 1
   selector: 
     matchLabels: 
-      app: auth
+      app: userdata
   template:
     metadata:
       labels:
-        app: auth
+        app: userdata
     spec:
       containers:
-        - name: auth
-          image: digicel/auth:latest
+        - name: userdata
+          image: digicel/userdata:latest
           env:
             - name: JWT_KEY
               valueFrom:
@@ -25,12 +25,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: auth-srv
+  name: userdata-srv
 spec:
   selector: 
-    app: auth
+    app: userdata
   ports:
-    - name: auth
+    - name: userdata
       protocol: TCP
       port: 3000
       targetPort: 3000

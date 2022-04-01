@@ -1,0 +1,26 @@
+const validity = (req, res, next) => {
+    console.log(`Validity Check`)
+    const {email, password} = req.body;
+    console.log(email,password);
+    function validEmail(userEmail) {
+      return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userEmail);
+    }
+  
+    if (req.path === "/api/users/signup") {
+      if (![email,password].every(Boolean)) {
+        return res.status(401).json("Missing Credentials");
+      } else if (!validEmail(email)) {
+        return res.status(401).json("Invalid Email");
+      }
+    } 
+    else if (req.path === "/api/users/signin") {
+      if (![email, password].every(Boolean)) {
+        return res.status(401).json("Missing Credentials");
+      } else if (!validEmail(email)) {
+        return res.status(401).json("Invalid Email");
+      }
+    }
+    next();
+  };
+
+  module.exports = validity;

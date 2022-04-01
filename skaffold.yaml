@@ -8,8 +8,8 @@ build:
   local:
     push: false
   artifacts:
-    - image: digicel/auth
-      context: auth
+    - image: digicel/userdata
+      context: userdata
       docker:
         dockerfile: DockerFile
       sync:

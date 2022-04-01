@@ -106,7 +106,7 @@ exports.checkTokenExpiration = async (req, res, next) => {
   }
 
 
-  getAWSCredentials = (credentials) => {
+  const getAWSCredentials = (credentials) => {
   return {
     accessKey: credentials.AccessKeyId,
     secretKey: credentials.SecretKey,

@@ -5,11 +5,11 @@ const poolData = {
   UserPoolId: "us-east-1_cBhmA75S1",
   ClientId: "1kffecgahvsb2cnmg00avkup6h",
 };
-
+const validityCheck = require('../middleware/validinfo.ts')
 const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
 
-router.post("/api/users/signin", async (req, res) => {
+router.post("/api/users/signin",validityCheck, async (req, res) => {
   try {
     // console.log("login: ", req.body.email, req.body.password);
     const loginDetails = {
