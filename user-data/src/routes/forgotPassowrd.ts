@@ -8,7 +8,7 @@ const poolData = {
 const validityCheck = require('../middleware/validinfo.ts')
 const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
-router.post("/api/users/forgotpassword", async (req, res) => {
+router.post("/api/users/forgotpassword",validityCheck, async (req, res) => {
     let {email} = req.body;
     const userData = {
         Username: email,

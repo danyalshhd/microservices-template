@@ -18,6 +18,11 @@ const validity = (req, res, next) => {
         return res.status(401).json("Invalid Email");
       }
     }
+    else if (req.path === "/api/users/forgotpassword") {
+      if (!validEmail(email)) {
+        return res.status(401).json("Invalid Email");
+      }
+    }
     next();
   };
 
