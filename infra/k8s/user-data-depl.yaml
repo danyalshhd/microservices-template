@@ -30,7 +30,7 @@ spec:
   selector: 
     app: user-data
   ports:
-    - name: userdata
+    - name: user-data
       protocol: TCP
       port: 3000
       targetPort: 3000

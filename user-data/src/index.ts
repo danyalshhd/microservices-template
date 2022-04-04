@@ -8,6 +8,9 @@ import { currentUserRouter } from './routes/current-user';
 import { signinRouter } from './routes/signin';
 import { signoutRouter } from './routes/signout';
 import { signupRouter } from './routes/signup';
+import { time } from './routes/time';
+import { forgotpasswordRouter } from './routes/forgotPassowrd';
+import { newpasswordRouter } from './routes/newPassword';
 import { errorHandler, NotFoundError } from '@dstransaction/common';
 
 const app = express();
@@ -30,6 +33,9 @@ app.use(currentUserRouter);
 app.use(signinRouter);
 app.use(signoutRouter);
 app.use(signupRouter);
+app.use(time);
+app.use(forgotpasswordRouter);
+app.use(newpasswordRouter)
 
 app.all('*', async (req, res) => {
   throw new NotFoundError();
