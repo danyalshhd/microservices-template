@@ -12,6 +12,7 @@ import { time } from './routes/time';
 import { forgotpasswordRouter } from './routes/forgotPassowrd';
 import { newpasswordRouter } from './routes/newPassword';
 import { errorHandler, NotFoundError } from '@dstransaction/common';
+import {confirmationRouter} from './routes/confirmation';
 
 const app = express();
 app.set('trust proxy', true);
@@ -36,6 +37,7 @@ app.use(signupRouter);
 app.use(time);
 app.use(forgotpasswordRouter);
 app.use(newpasswordRouter)
+app.use(confirmationRouter);
 
 app.all('*', async (req, res) => {
   throw new NotFoundError();

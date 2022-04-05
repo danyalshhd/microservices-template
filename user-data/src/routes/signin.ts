@@ -7,7 +7,8 @@ const poolData = {
 };
 const validityCheck = require('../middleware/validinfo.ts')
 const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-
+const {checkTokenExpiration, authorizeUser} = require('../middleware/aws_authourization')
+// ,authorizeUser,checkTokenExpiration
 
 router.post("/api/users/signin",validityCheck, async (req, res) => {
   try {
@@ -28,17 +29,17 @@ router.post("/api/users/signin",validityCheck, async (req, res) => {
 
     const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userDetails);
     cognitoUser.authenticateUser(authDetails, {
-      onSuccess: function (data) {
+      onSuccess: (data) => {
         var accessToken = data.getAccessToken().getJwtToken();
         // console.log(accessToken);
         console.log("Success");
-        // res.cookie("data",data);
+        // .cookie('data',data)
         //, {expires: new Date(Date.now() + 90000),}
         res.send(`Login Successful`).status(200);
       },
-      onFailure: function (err) {
+      onFailure: (err) => {
         console.log("Failed");
-        res.send(err);
+        res.send('Invalid credentials');
       },
     });
   } catch (error) {

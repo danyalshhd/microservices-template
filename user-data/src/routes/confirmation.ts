@@ -9,7 +9,7 @@ const poolData = {
 const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
 
-router.post("/confirmation", async (req, res) => {
+router.post("/api/users/confirmation", async (req, res) => {
     try {
       let { email } = req.body;
       let { code } = req.body;

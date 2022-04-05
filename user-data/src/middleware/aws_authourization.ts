@@ -9,99 +9,58 @@ const poolData = {
 const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
 exports.authorizeUser = (req, res, next) => {
-try {
   let cognitoUser = userPool.getCurrentUser();
-  console.log(cognitoUser);
-  AWS.config.region = 'us-east-1';
-  if (cognitoUser != null) 
-  {
-    cognitoUser.getSession(async (err, session) =>
-    {
-      if (err) {
-        console.error(err.message);
-        return;
-      }
-      AWS.config.credentials = new AWS.CognitoIdentityCredentials(
-        {
-          IdentityPoolId: 'us-east-1:27e324b7-2404-4c74-8ebc-b956a77f6fa5',
-          Logins: 
-          {
-            // Change the key below according to the specific region your user pool is in.
-            'cognito-idp.us-east-1.amazonaws.com/us-east-1_cBhmA75S1': session
-              .getIdToken()
-              .getJwtToken(),
-          },
-        }
-        );
-         await AWS.config.credentials.get ((err) => 
-        {
-            if (err) throw err;
-            session.identityId = AWS.config.credentials.identityId;
-            const credentials = AWS.config.credentials.data.Credentials;
-            console.log(credentials)
-            session.AWSCredentials = getAWSCredentials(credentials);
-        });
-    },
-    next())
-  }
-  else{
-    res.send(`Not Authorized`).status(401);
-  }
-  } 
-catch (err) {
-  console.error(err);
-  res.status(401);
   next();
-  }
 };
 
 exports.checkTokenExpiration = async (req, res, next) => {
   let cognitoUser = userPool.getCurrentUser();
   if (cognitoUser != null) {
-    await cognitoUser.getSession((err, session) => {
-      if (err) {
-        console.error(err.message);
-        return;
+    let {rememberme} = req.body;
+    if (req.path === "/api/users/signin" && rememberme === true)
+    {
+      await cognitoUser.getSession((err, session) => {
+        if (err) {
+          console.error(err.message);
+          return;
+        }
+          AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+            IdentityPoolId: 'us-east-1:27e324b7-2404-4c74-8ebc-b956a77f6fa5', // your identity pool id here
+            Logins: {
+              // Change the key below according to the specific region your user pool is in.
+              'cognito-idp.us-east-1.amazonaws.com/us-east-1_cBhmA75S1': session
+                .getIdToken()
+                .getJwtToken(),
+            },
+          });
+          let refresh_token = session.getRefreshToken();
+           // receive session from calling cognitoUser.getSession()
+           AWS.config.region = 'us-east-1'
+          if (AWS.config.credentials.needsRefresh()) {
+          cognitoUser.refreshSession(refresh_token, (err, session) => {
+        if (err) {
+          console.log(err);
+        } else {
+          AWS.config.credentials.params.Logins[
+            'cognito-idp.us-east-1.amazonaws.com/us-east-1_cBhmA75S1'
+          ] = session.getIdToken().getJwtToken();
+          AWS.config.credentials.refresh(err => {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log('TOKEN SUCCESSFULLY UPDATED');
+            }
+          });
+        }
+      });
+    }
+      });
+    }
+    else{
+      res.status(401);
       }
-      console.log('session validity: ' + session.isValid());
-      if (session.isValid() === false)
-      {
-        AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-          IdentityPoolId: 'us-east-1:27e324b7-2404-4c74-8ebc-b956a77f6fa5', // your identity pool id here
-          Logins: {
-            // Change the key below according to the specific region your user pool is in.
-            'cognito-idp.us-east-1.amazonaws.com/us-east-1_cBhmA75S1': session
-              .getIdToken()
-              .getJwtToken(),
-          },
-        });
-        let refresh_token = session.getRefreshToken();
-         // receive session from calling cognitoUser.getSession()
-         AWS.config.region = 'us-east-1'
-        if (AWS.config.credentials.needsRefresh()) {
-        cognitoUser.refreshSession(refresh_token, (err, session) => {
-      if (err) {
-        console.log(err);
-      } else {
-        AWS.config.credentials.params.Logins[
-          'cognito-idp.us-east-1.amazonaws.com/us-east-1_cBhmA75S1'
-        ] = session.getIdToken().getJwtToken();
-        AWS.config.credentials.refresh(err => {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log('TOKEN SUCCESSFULLY UPDATED');
-          }
-        });
-      }
-    });
-  }
-      }
-    });
-  }
-  else{
-    res.status(401);
-  }
+    }
+
   next();
   }
 
@@ -135,3 +94,57 @@ exports.checkTokenExpiration = async (req, res, next) => {
 //              // code in this part is reached only if accessToken is valid.
 //              // So add your code to respond to a verified user here.
 //          }
+
+// try {
+//   let cognitoUser = userPool.getCurrentUser();
+//   // let cognitoUserSession = userPool.
+//   console.log(cognitoUser);
+//   if (cognitoUser != null) 
+//   {
+//     cognitoUser.getSession(async (err, session) =>
+//     {
+//       if (err) {
+//         console.error(err.message);
+//         return;
+//       }
+//       if (session.isValid())
+//       {
+//         next();
+//       }
+//       else
+//       {
+//         res.send(`Session Expired.`)
+//         next();
+//       }
+//       // AWS.config.credentials = new AWS.CognitoIdentityCredentials(
+//       //   {
+//       //     IdentityPoolId: 'us-east-1:27e324b7-2404-4c74-8ebc-b956a77f6fa5',
+//       //     Logins: 
+//       //     {
+//       //       // Change the key below according to the specific region your user pool is in.
+//       //       'cognito-idp.us-east-1.amazonaws.com/us-east-1_cBhmA75S1': session
+//       //         .getIdToken()
+//       //         .getJwtToken(),
+//       //     },
+//       //   }
+//       //   );
+//       //    await AWS.config.credentials.get ((err) => 
+//       //   {
+//       //       if (err) throw err;
+//       //       session.identityId = AWS.config.credentials.identityId;
+//       //       const credentials = AWS.config.credentials.data.Credentials;
+//       //       console.log(credentials)
+//       //       session.AWSCredentials = getAWSCredentials(credentials);
+//       //   });
+//     },
+//     next())
+//   }
+//   else{
+//     res.send(`Not Authorized`).status(401);
+//   }
+//   } 
+// catch (err) {
+//   console.error(err);
+//   res.status(401);
+//   next();
+//   }
