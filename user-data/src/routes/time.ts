@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const moment = require("moment");
-const {authorizeUser} = require('../middleware/aws_authourization')
 
 
- router.get('/api/users/time',authorizeUser, (req,res) => {
+ router.get('/api/users/time', (req,res) => {
     let {date} = req.body;
     var localDate = moment().format(); 
     var utcFormat = moment.utc(localDate).format('YYYY-MM-DD HH:mm:ss a');
