@@ -10,7 +10,27 @@ const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
 exports.authorizeUser = (req, res, next) => {
   let cognitoUser = userPool.getCurrentUser();
-  next();
+  if(cognitoUser!== null )
+  {
+    cognitoUser.getSession((err, session) => {
+    if (err)
+    {
+      res.send(err);
+    }
+    if (session.isValid())
+    {
+      next();
+    }
+    else
+    {
+      res.send('Token Expired.')
+      next();
+    }
+  })
+ }
+ else{
+   res.status(401).send('User is not authenticated');
+ }
 };
 
 exports.checkTokenExpiration = async (req, res, next) => {
