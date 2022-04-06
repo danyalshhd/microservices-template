@@ -30,6 +30,7 @@ exports.authorizeUser = (req, res, next) => {
  }
  else{
    res.status(401).send('User is not authenticated');
+   next();
  }
 };
 
