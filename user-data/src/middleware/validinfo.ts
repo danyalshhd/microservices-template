@@ -8,19 +8,19 @@ const validity = (req, res, next) => {
       if (![email,password].every(Boolean)) {
         return res.status(401).json("Missing Credentials");
       } else if (!validEmail(email)) {
-        return res.status(401).json("Invalid Email");
+        return res.status(401).json('Email must be valid');
       }
     } 
     else if (req.path === "/api/users/signin") {
       if (![email, password].every(Boolean)) {
         return res.status(401).json("Missing Credentials");
       } else if (!validEmail(email)) {
-        return res.status(401).json("Invalid Email");
+        return res.status(401).json('Email must be valid');
       }
     }
     else if (req.path === "/api/users/forgotpassword") {
       if (!validEmail(email)) {
-        return res.status(401).json("Invalid Email");
+        return res.status(401).json('Email must be valid');
       }
     }
     next();
