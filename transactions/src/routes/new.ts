@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
-import { requireAuth, validateRequest } from '@dstransaction/common';
+import { requireAuth, validateRequest, TransactionStatus } from '@dstransaction/common';
 import { Transaction } from '../models/transaction';
 import { TransactionCreatedPublisher } from '../events/publishers/transaction-created-publisher';
 import { natsWrapper } from '../nats-wrapper';
@@ -23,6 +23,7 @@ router.post(
     const transaction = Transaction.build({
       title,
       price,
+      status: TransactionStatus.Created,
       userId: req.currentUser!.id,
     });
     await transaction.save();

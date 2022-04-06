@@ -3,12 +3,14 @@ import mongoose from 'mongoose';
 interface TransactionAttrs {
   title: string;
   price: number;
+  status: string;
   userId: string;
 }
 
 interface TransactionDoc extends mongoose.Document {
   title: string;
   price: number;
+  status: string;
   userId: string;
 }
 
@@ -26,6 +28,10 @@ const transactionSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    status: {
+      type: String,
+      required: true
+  },
     userId: {
       type: String,
       required: true,

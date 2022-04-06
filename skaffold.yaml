@@ -4,6 +4,7 @@ deploy:
   kubectl:
     manifests:
       - ./infra/k8s/*
+      - ./infra/k8s-dev/*
 build:
   local:
     push: false
@@ -18,6 +19,14 @@ build:
             dest: .
     - image: digicel/transactions
       context: transactions
+      docker:
+        dockerfile: DockerFile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
+    - image: digicel/accounts
+      context: accounts
       docker:
         dockerfile: DockerFile
       sync:

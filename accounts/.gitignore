@@ -8,6 +8,3 @@ transactions/package-lock.json
 
 common/node_modules
 common/package-lock.json
-
-accounts/node_modules
-accounts/package-lock.json
