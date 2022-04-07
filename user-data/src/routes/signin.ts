@@ -41,6 +41,14 @@ router.post(
       onSuccess: (data: any) => {
         var accessToken = data.getAccessToken().getJwtToken();
         cognitoUser.setSignInUserSession(data);
+        cognitoUser.getDevice({
+          onSuccess: (data:any) =>{
+            console.log(data);
+          },
+          onFailure: (err: any) => {
+            console.log(err);
+          }
+        })
         res.send(`Login Successful`).status(200);
       },
       onFailure: (err: any) => {
