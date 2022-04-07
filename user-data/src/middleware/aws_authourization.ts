@@ -13,8 +13,11 @@ exports.authorizeUser = (req: any, res: any, next: any) => {
   if (cognitoUser !== null) {
     cognitoUser.getSession((err: any, session: any) => {
       if (err) {
-        res.send(err);
-      }
+        console.log('dffd');
+    } 
+    else {
+        console.log('helloworld');
+    }
       if (session.isValid()) {
         next();
       }
@@ -37,9 +40,12 @@ exports.checkTokenExpiration = async (req: any, res: any, next: any) => {
     if (req.path === "/api/users/signin" && rememberme === true) {
       await cognitoUser.getSession((err: any, session: any) => {
         if (err) {
-          console.error(err.message);
+          console.log('dffd');
           return;
-        }
+      } 
+      else {
+          console.log('helloworld');
+      }
         AWS.config.credentials = new AWS.CognitoIdentityCredentials({
           IdentityPoolId: 'us-east-1:27e324b7-2404-4c74-8ebc-b956a77f6fa5', // your identity pool id here
           Logins: {
