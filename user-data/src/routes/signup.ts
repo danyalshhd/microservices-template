@@ -1,17 +1,17 @@
-const express = require("express");
+import express, { Request, Response } from 'express';
 const router = express.Router();
 const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
 const poolData = {
-  UserPoolId: "us-east-1_cBhmA75S1",
-  ClientId: "1kffecgahvsb2cnmg00avkup6h",
+  UserPoolId: process.env.AWS_POOL_ID,
+  ClientId: process.env.AWS_CLIENT_ID,
 };
 
 const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+import { NotFoundError } from '@dstransaction/common';
 
-router.post('/api/users/signup', (req,res) => {
+router.post('/api/users/signup', (req: Request, res: Response) => {
   try {
-    let { email } = req.body;
-    let { password } = req.body;
+    let { email, password } = req.body;
     const emailData = {
       Name: "email",
       Value: email,
@@ -19,15 +19,14 @@ router.post('/api/users/signup', (req,res) => {
     const emailAttribute = new AmazonCognitoIdentity.CognitoUserAttribute(
       emailData
     );
-    userPool.signUp(email, password, [emailAttribute], null, (err, data) => {
+    userPool.signUp(email, password, [emailAttribute], null, (err: any, data: any) => {
       if (err) {
-        console.error(err);
-        res.status(404);
+        throw new NotFoundError ();
       }
       res.send(data);
     });
   } catch (error) {
-    console.error(error);
+    throw new NotFoundError ();
   }
 
 });

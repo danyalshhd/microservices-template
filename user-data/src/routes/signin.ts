@@ -1,18 +1,28 @@
-const express = require("express");
+import express, { Request, Response } from 'express';
+import { body } from 'express-validator';
 const router = express.Router();
 const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
 const poolData = {
-  UserPoolId: "us-east-1_cBhmA75S1",
-  ClientId: "1kffecgahvsb2cnmg00avkup6h",
+  UserPoolId: process.env.AWS_POOL_ID,
+  ClientId: process.env.AWS_CLIENT_ID,
 };
-const validityCheck = require('../middleware/validinfo.ts')
 const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-const {checkTokenExpiration, authorizeUser} = require('../middleware/aws_authourization')
-// ,authorizeUser,checkTokenExpiration
+import { validateRequest, BadRequestError } from '@dstransaction/common';
 
-router.post("/api/users/signin",validityCheck, async (req, res) => {
+router.post(
+  '/api/users/signin',
+  [
+    body('email')
+      .isEmail()
+      .withMessage('Email must be valid'),
+    body('password')
+      .trim()
+      .notEmpty()
+      .withMessage('You must supply a password')
+  ],
+  validateRequest,
+  async (req: Request, res: Response) => {
   try {
-    // console.log("login: ", req.body.email, req.body.password);
     const loginDetails = {
       Username: req.body.email,
       Password: req.body.password,
@@ -29,21 +39,17 @@ router.post("/api/users/signin",validityCheck, async (req, res) => {
 
     const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userDetails);
     cognitoUser.authenticateUser(authDetails, {
-      onSuccess: (data) => {
+      onSuccess: (data: any) => {
         var accessToken = data.getAccessToken().getJwtToken();
-        // console.log(accessToken);
-        console.log("Success");
-        // .cookie('data',data)
-        //, {expires: new Date(Date.now() + 90000),}
+        cognitoUser.setSignInUserSession(data);
         res.send(`Login Successful`).status(200);
       },
-      onFailure: (err) => {
-        console.log("Failed");
-        res.send('Invalid credentials');
+      onFailure: (err: any) => {
+        throw new BadRequestError('Invalid credentials');
       },
     });
   } catch (error) {
-    console.error(error);
+    throw new BadRequestError('Invalid credentials');;
   }
 });
 

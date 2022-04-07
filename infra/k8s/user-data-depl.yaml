@@ -16,6 +16,10 @@ spec:
         - name: user-data
           image: digicel/user-data:latest
           env:
+            - name: AWS_CLIENT_ID
+              value: '1kffecgahvsb2cnmg00avkup6h'
+            - name: AWS_POOL_ID
+              value: 'us-east-1_cBhmA75S1'
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:

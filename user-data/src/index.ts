@@ -8,9 +8,7 @@ import { currentUserRouter } from './routes/current-user';
 import { signinRouter } from './routes/signin';
 import { signoutRouter } from './routes/signout';
 import { signupRouter } from './routes/signup';
-import { time } from './routes/time';
 import { forgotpasswordRouter } from './routes/forgotPassowrd';
-import { newpasswordRouter } from './routes/newPassword';
 import { errorHandler, NotFoundError } from '@dstransaction/common';
 import {confirmationRouter} from './routes/confirmation';
 
@@ -34,9 +32,7 @@ app.use(currentUserRouter);
 app.use(signinRouter);
 app.use(signoutRouter);
 app.use(signupRouter);
-app.use(time);
 app.use(forgotpasswordRouter);
-app.use(newpasswordRouter)
 app.use(confirmationRouter);
 
 app.all('*', async (req, res) => {
@@ -51,7 +47,8 @@ const start = async () => {
   }
 
   try {
-    await mongoose.connect('mongodb://auth-mongo-srv:27017/auth');
+    await mongoose.connect('mongodb://host.docker.internal:27017/auth'); 
+    // mongodb://auth-mongo-srv:27017/auth
     console.log('Connected to MongoDb');
   } catch (err) {
     console.error(err);
