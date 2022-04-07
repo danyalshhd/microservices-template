@@ -8,6 +8,8 @@ import { currentUserRouter } from './routes/current-user';
 import { signinRouter } from './routes/signin';
 import { signoutRouter } from './routes/signout';
 import { signupRouter } from './routes/signup';
+import { onfidoRouter } from './routes/onfido';
+import { imageRouter } from './routes/upload-image';
 import { errorHandler, NotFoundError } from '@dstransaction/common';
 
 const app = express();
@@ -17,7 +19,7 @@ app.use(
   cookieSession({
     signed: false,
     secure: true,
-    name: 'session'
+    name: 'session',
   })
 );
 // app.use((req, res, next) => {
@@ -30,7 +32,8 @@ app.use(currentUserRouter);
 app.use(signinRouter);
 app.use(signoutRouter);
 app.use(signupRouter);
-
+app.use(onfidoRouter);
+app.use(imageRouter);
 app.all('*', async (req, res) => {
   throw new NotFoundError();
 });

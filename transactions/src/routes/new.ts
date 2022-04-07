@@ -26,7 +26,7 @@ router.post(
       userId: req.currentUser!.id,
     });
     await transaction.save();
-    
+
     await new TransactionCreatedPublisher(natsWrapper.client).publish({
       id: transaction.id,
       title: transaction.title,

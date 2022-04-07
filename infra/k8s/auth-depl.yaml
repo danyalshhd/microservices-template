@@ -4,8 +4,8 @@ metadata:
   name: auth-depl
 spec:
   replicas: 1
-  selector: 
-    matchLabels: 
+  selector:
+    matchLabels:
       app: auth
   template:
     metadata:
@@ -16,6 +16,12 @@ spec:
         - name: auth
           image: digicel/auth:latest
           env:
+            - name: TWILIO_ACCOUNT_SID
+              value: 'AC81701f8c78c1f580a73581c6265cb084'
+            - name: TWILIO_AUTH_TOKEN
+              value: '4a337e2456d61e6b0bcea2f39b20b774'
+            - name: ONFIDO_API_TOKEN
+              value: 'api_sandbox_us.5KyZsPeogLb.dPJI2tWP_LxvWExZ8XqkrM5JDfmd0Jju'
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
@@ -27,7 +33,7 @@ kind: Service
 metadata:
   name: auth-srv
 spec:
-  selector: 
+  selector:
     app: auth
   ports:
     - name: auth
