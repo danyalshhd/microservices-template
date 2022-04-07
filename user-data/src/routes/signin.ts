@@ -22,7 +22,6 @@ router.post(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-  try {
     const loginDetails = {
       Username: req.body.email,
       Password: req.body.password,
@@ -48,9 +47,6 @@ router.post(
         throw new BadRequestError('Invalid credentials');
       },
     });
-  } catch (error) {
-    throw new BadRequestError('Invalid credentials');;
-  }
 });
 
 
