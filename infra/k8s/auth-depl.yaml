@@ -16,12 +16,20 @@ spec:
         - name: auth
           image: digicel/auth:latest
           env:
+            - name: AWS_BUCKET_NAME
+              value: ''
+            - name: AWS_BUCKET_REGION
+              value: ''
+            - name: ACCESS_KEY_ID
+              value: ''
+            - name: AWS_SECRET_ACCESS_KEY
+              value: ''
             - name: TWILIO_ACCOUNT_SID
-              value: 'AC81701f8c78c1f580a73581c6265cb084'
+              value: ''
             - name: TWILIO_AUTH_TOKEN
-              value: '4a337e2456d61e6b0bcea2f39b20b774'
+              value: ''
             - name: ONFIDO_API_TOKEN
-              value: 'api_sandbox_us.5KyZsPeogLb.dPJI2tWP_LxvWExZ8XqkrM5JDfmd0Jju'
+              value: ''
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:

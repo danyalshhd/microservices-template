@@ -24,6 +24,21 @@ interface UserDoc extends mongoose.Document {
 
 const userSchema = new mongoose.Schema(
   {
+    phoneNumber: {
+      type: String,
+    },
+    firstName: {
+      type: String,
+    },
+    lastName: {
+      type: String,
+    },
+    dob: {
+      type: String,
+    },
+    trnNumber: {
+      type: String,
+    },
     email: {
       type: String,
       required: true,

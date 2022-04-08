@@ -1,8 +1,3 @@
-let AWS_BUCKET_NAME = 'digicell-bucket';
-let AWS_BUCKET_REGION = 'ap-southeast-1';
-let ACCESS_KEY_ID = 'AKIARJ5OYBXGRVHTQM6W';
-let AWS_SECRET_ACCESS_KEY = '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';
-
 import S3 from 'aws-sdk/clients/s3';
 import fs from 'fs';
 import express from 'express';
@@ -10,19 +5,11 @@ import { body } from 'express-validator';
 import path from 'path';
 import { validateRequest, BadRequestError } from '@dstransaction/common';
 const multer = require('multer');
-// const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
-// const poolData = {
-//   UserPoolId: 'us-east-1_cBhmA75S1',
-//   ClientId: '1kffecgahvsb2cnmg00avkup6h',
-// };
 
-// const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-// userPool.signUp()
-
-let bucketName = AWS_BUCKET_NAME;
-let region = AWS_BUCKET_REGION;
-let accessKeyId = ACCESS_KEY_ID;
-let secretAccessKey = AWS_SECRET_ACCESS_KEY;
+let bucketName = process.env.AWS_BUCKET_NAME as string;
+let region = process.env.AWS_BUCKET_REGION;
+let accessKeyId = process.env.ACCESS_KEY_ID;
+let secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 
 const router = express.Router();
 const upload = multer({
