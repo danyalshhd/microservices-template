@@ -27,12 +27,12 @@ router.post(
     });
     await transaction.save();
 
-    await new TransactionCreatedPublisher(natsWrapper.client).publish({
-      id: transaction.id,
-      title: transaction.title,
-      price: +transaction.price,
-      userId: transaction.userId,
-    });
+    // await new TransactionCreatedPublisher(natsWrapper.client).publish({
+    //   id: transaction.id,
+    //   title: transaction.title,
+    //   price: +transaction.price,
+    //   userId: transaction.userId,
+    // });
 
     res.status(201).send(transaction);
   }

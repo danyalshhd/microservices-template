@@ -6,14 +6,14 @@ const onfido = new Onfido({
   region: Region.US,
 });
 
-const webhookToken = 'hoDFlFjkaubtHn3fUGPGezkxPCCA-5E8';
+const webhookToken = 'wDtXGxCftDUZRFsMqDyBgBxsAlftHSS_';
 const verifier = new WebhookEventVerifier(webhookToken);
 
 const readWebhookEvent = (rawEventBody: string | Buffer, signature: string) => {
   try {
     return verifier.readPayload(rawEventBody, signature);
   } catch (error) {
-    return;
+    throw new Error('Unauthorized');
   }
 };
 

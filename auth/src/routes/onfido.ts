@@ -4,7 +4,11 @@ import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 import path from 'path';
 import fs from 'fs';
-import { validateRequest, BadRequestError } from '@dstransaction/common';
+import {
+  validateRequest,
+  BadRequestError,
+  NotAuthorizedError,
+} from '@dstransaction/common';
 
 const router = express.Router();
 
@@ -105,11 +109,13 @@ router.get(
   }
 );
 
-router.post('/api/onfido/hook', async (req, res) => {
+router.post('/api/onfido/webhook', async (req, res) => {
   try {
-    console.log('hre in hook');
+    const signature = req.headers['x-sha2-signature'] as string;
+    let verifiedBody = readWebhookEvent(JSON.stringify(req.body), signature);
+    res.status(200).send('ok');
   } catch (error) {
-    console.log('here in hook');
+    throw new NotAuthorizedError();
   }
 });
 
