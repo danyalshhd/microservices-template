@@ -1,11 +1,9 @@
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
+const moment = require('moment');
 const router = express.Router();
 const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
-const poolData = {
-  UserPoolId: process.env.AWS_POOL_ID,
-  ClientId: process.env.AWS_CLIENT_ID,
-};
+const { poolData } = require('../config/cognito-config');
 const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 import { validateRequest, BadRequestError } from '@dstransaction/common';
 
@@ -22,40 +20,47 @@ router.post(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    const loginDetails = {
-      Username: req.body.email,
-      Password: req.body.password,
+    var body = req.body;
+    var authenticationData = {
+      Username: body['email'],
+      Password: body['password'],
     };
-
-    const authDetails = new AmazonCognitoIdentity.AuthenticationDetails(
-      loginDetails
+    var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(
+        authenticationData
     );
-
-    const userDetails = {
-      Username: req.body.email,
-      Pool: userPool,
+    var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+    var userData = {
+        Username: body['email'],
+        Pool: userPool,
     };
-
-    const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userDetails);
-    cognitoUser.authenticateUser(authDetails, {
-      onSuccess: (data: any) => {
-        var accessToken = data.getAccessToken().getJwtToken();
-        cognitoUser.setSignInUserSession(data);
-        cognitoUser.getDevice({
-          onSuccess: (data:any) =>{
-            console.log(data);
-          },
-          onFailure: (err: any) => {
-            console.log(err);
-          }
-        })
-        res.send(`Login Successful`).status(200);
-      },
-      onFailure: (err: any) => {
-        throw new BadRequestError('Invalid credentials');
-      },
+    var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+    cognitoUser.authenticateUser(authenticationDetails, {
+        onSuccess: (result: any) => {
+            res.status(200).json({
+              "status": 1, "message": "user signed in successfully ", "data": {
+                  "idToken": result.getIdToken().getJwtToken(),
+                  "accessToken": result.getAccessToken().getJwtToken(),
+                  "refreshToken": result.getRefreshToken().getToken()
+              }
+          });
+        },
+        onFailure: (err: any) => {
+          res.status(200).json({ "status": 0, "message": "User sign in failed "+err });
+        },
     });
 });
 
 
 export { router as signinRouter };
+
+
+//Remember Me Code
+
+// await cognitoUser.setDeviceStatusRemembered({
+//   onSuccess: (data: any) => {
+//     console.log(data);
+//   },
+//   onFailure: (err: any) => {
+//     console.log(err);
+//   }
+// })

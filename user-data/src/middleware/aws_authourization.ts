@@ -1,87 +1,55 @@
-const AWS = require('aws-sdk');
-const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
-const poolData = {
-  UserPoolId: process.env.AWS_POOL_ID,
-  ClientId: process.env.AWS_CLIENT_ID,
-};
+const jwkToPem = require('jwk-to-pem');
+const jwt = require('jsonwebtoken');
+const { poolData, pool_region } = require('../config/cognito-config');
+const request = require('request');
 
-
-const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-
-exports.authorizeUser = (req: any, res: any, next: any) => {
-  let cognitoUser = userPool.getCurrentUser();
-  if (cognitoUser !== null) {
-    cognitoUser.getSession((err: any, session: any) => {
-      if (err) {
-        console.log('dffd');
-    } 
-    else {
-        console.log('helloworld');
-    }
-      if (session.isValid()) {
-        next();
-      }
-      else {
-        res.send('Token Expired.')
-        next();
-      }
-    })
-  }
-  else {
-    res.status(401).send('User is not authenticated');
-    next();
-  }
-};
-
-exports.checkTokenExpiration = async (req: any, res: any, next: any) => {
-  let cognitoUser = userPool.getCurrentUser();
-  if (cognitoUser != null) {
-    let { rememberme } = req.body;
-    if (req.path === "/api/users/signin" && rememberme === true) {
-      await cognitoUser.getSession((err: any, session: any) => {
-        if (err) {
-          console.log('dffd');
-          return;
-      } 
-      else {
-          console.log('helloworld');
-      }
-        AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-          IdentityPoolId: 'us-east-1:27e324b7-2404-4c74-8ebc-b956a77f6fa5', // your identity pool id here
-          Logins: {
-            // Change the key below according to the specific region your user pool is in.
-            'cognito-idp.us-east-1.amazonaws.com/us-east-1_cBhmA75S1': session
-              .getIdToken()
-              .getJwtToken(),
-          },
-        });
-        let refresh_token = session.getRefreshToken();
-        // receive session from calling cognitoUser.getSession()
-        AWS.config.region = 'us-east-1'
-        if (AWS.config.credentials.needsRefresh()) {
-          cognitoUser.refreshSession(refresh_token, (err: any, session: any) => {
-            if (err) {
-              console.log(err);
-            } else {
-              AWS.config.credentials.params.Logins[
-                'cognito-idp.us-east-1.amazonaws.com/us-east-1_cBhmA75S1'
-              ] = session.getIdToken().getJwtToken();
-              AWS.config.credentials.refresh((err: any) => {
-                if (err) {
-                  console.log(err);
-                } else {
-                  console.log('TOKEN SUCCESSFULLY UPDATED');
-                }
-              });
-            }
-          });
+exports.default = () => {
+    return (req: any, res: any, next: any) => {
+        const decodedJwt = jwt.decode(req.headers['authorization'], {complete: true});
+        //console.log(decodedJwt);
+        if (!decodedJwt) {
+            res.status(200).json({ "status": 0, "message": "Not a valid JWT Token" });
         }
-      });
-    }
-    else {
-      res.status(401);
-    }
-  }
-
-  next();
-}
+        if (decodedJwt.payload.iss !== 'https://cognito-idp.'+pool_region+'.amazonaws.com/'+poolData.UserPoolId) {
+            res.status(200).json({ "status": 0, "message": 'Invalid issuer: ' + decodedJwt.payload.iss });
+        }
+        if (!(decodedJwt.payload.token_use === 'id')) {
+            res.status(200).json({ "status": 0, "message": 'Invalid token_use: ' + decodedJwt.payload.token_use });
+        }
+        if (decodedJwt.payload.aud !== poolData.ClientId) {
+            res.status(200).json({ "status": 0, "message": 'Invalid aud: ' + decodedJwt.payload.aud });
+        }
+        request({url: 'https://cognito-idp.us-east-1.amazonaws.com/'+poolData.UserPoolId+'/.well-known/jwks.json', json: true}, (error: any, response: any, body: any) => {
+            if (!error && response.statusCode === 200) {
+                //console.log(body);
+                let pems: any = {};
+                var keys = body['keys'];
+                for(var i = 0; i < keys.length; i++) {
+                    var key_id = keys[i].kid;
+                    var modulus = keys[i].n;
+                    var exponent = keys[i].e;
+                    var key_type = keys[i].kty;
+                    var jwk = { kty: key_type, n: modulus, e: exponent};
+                    var pem = jwkToPem(jwk);
+                    pems[key_id] = pem;
+                }
+                var kid = decodedJwt.header.kid;
+                var pem = pems[kid];
+                if (!pem) {
+                    //context.fail("Unauthorized");
+                    res.status(200).json({ "status": 0, "message": "Invalid token: Unauthorized" });
+                    return;
+                }
+                jwt.verify(req.headers['authorization'], pem, (err: any, decoded: any) => {
+                    if (err) {
+                        res.status(200).json({ "status": 0, "message": "Token validation failed" });
+                    }  
+                    console.log("JWT Validation passed");
+                    next();
+                });
+            } else {
+                res.status(200).json({ "status": 0, "message": "JWK json download failed" });
+            }
+        });
+        };
+    };

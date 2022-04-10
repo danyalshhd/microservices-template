@@ -7,9 +7,10 @@ const poolData = {
 };
 
 const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+const validator = require('../middleware/aws_authourization')
 
 
-router.get('/api/users/currentuser', (req: any, res: any) => {
+router.get('/api/users/currentuser',validator.default(), (req: any, res: any) => {
   res.send({ currentUser: userPool.getCurrentUser() || null });
 });
 

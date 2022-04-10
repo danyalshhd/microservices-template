@@ -20,6 +20,8 @@ spec:
               value: '1kffecgahvsb2cnmg00avkup6h'
             - name: AWS_POOL_ID
               value: 'us-east-1_cBhmA75S1'
+            - name: AWS_REGION
+              value: 'us-east-1'
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:

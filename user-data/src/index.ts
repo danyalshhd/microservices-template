@@ -3,6 +3,9 @@ import 'express-async-errors';
 import { json } from 'body-parser';
 import mongoose from 'mongoose';
 import cookieSession from 'cookie-session';
+import cookieParser from 'cookie-parser';
+const bodyParser = require("body-parser");
+const cors = require("cors");
 
 import { currentUserRouter } from './routes/current-user';
 import { signinRouter } from './routes/signin';
@@ -13,8 +16,15 @@ import { errorHandler, NotFoundError } from '@dstransaction/common';
 import {confirmationRouter} from './routes/confirmation';
 
 const app = express();
+app.use(cors());
+app.use(express.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({
+    limit: '50mb',
+    extended: true
+}));
 app.set('trust proxy', true);
 app.use(json());
+app.use(cookieParser());
 app.use(
   cookieSession({
     signed: false,
