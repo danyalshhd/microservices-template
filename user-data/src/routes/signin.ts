@@ -4,7 +4,6 @@ const moment = require('moment');
 const router = express.Router();
 const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
 const { poolData } = require('../config/cognito-config');
-const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 import { validateRequest, BadRequestError } from '@dstransaction/common';
 
 router.post(
