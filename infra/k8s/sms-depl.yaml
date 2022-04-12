@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sms-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sms
+  template:
+    metadata:
+      labels:
+        app: sms
+    spec:
+      containers:
+        - name: sms
+          image: digicel/sms:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sms-srv
+spec:
+  selector:
+    app: sms
+  ports:
+    - name: sms
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

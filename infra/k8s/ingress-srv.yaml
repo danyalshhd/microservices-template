@@ -24,4 +24,11 @@ spec:
                 name: transactions-srv
                 port:
                   number: 3000
+          - path: /api/sms/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: sms-srv
+                port:
+                  number: 3000
           

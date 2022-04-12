@@ -1,0 +1,21 @@
+{
+  "name": "sms",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node-dev --rs src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@dstransaction/common": "^1.0.8",
+    "body-parser": "^1.20.0",
+    "cookie-session": "^2.0.0",
+    "express": "^4.17.3",
+    "express-async-errors": "^3.1.1",
+    "request": "^2.88.2",
+    "ts-node-dev": "^1.1.6"
+  }
+}

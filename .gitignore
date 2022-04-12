@@ -8,3 +8,6 @@ transactions/package-lock.json
 
 common/node_modules
 common/package-lock.json
+
+sms/node_modules
+sms/package-lock.json

@@ -1,23 +1,23 @@
-import express, { Request, Response } from 'express';
-import { body } from 'express-validator';
+import express, { Request, Response } from "express";
+import { body } from "express-validator";
 import {
   validateRequest,
   NotFoundError,
   requireAuth,
   NotAuthorizedError,
-} from '@dstransaction/common';
-import { Transaction } from '../models/transaction';
+} from "@dstransaction/common";
+import { Transaction } from "../models/transaction";
 
 const router = express.Router();
 
 router.put(
-  '/api/transactions/:id',
+  "/api/transactions/:id",
   requireAuth,
   [
-    body('title').not().isEmpty().withMessage('Title is required'),
-    body('price')
+    body("title").not().isEmpty().withMessage("Title is required"),
+    body("price")
       .isFloat({ gt: 0 })
-      .withMessage('Price must be provided and must be greater than 0'),
+      .withMessage("Price must be provided and must be greater than 0"),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
