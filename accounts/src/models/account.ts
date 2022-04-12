@@ -14,6 +14,7 @@ interface AccountDoc extends mongoose.Document {
     status: AccountStatus;
     //expiresAt: Date;
     transaction: TransactionDoc;
+    version: number;
 }
 
 interface AccountModel extends mongoose.Model<AccountDoc> {

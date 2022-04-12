@@ -7,6 +7,8 @@ import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
 
+const EXPIRATION_WINDOW_SECONDS = 15 * 60;
+
 router.post(
   '/api/transactions',
   requireAuth,
@@ -20,10 +22,15 @@ router.post(
   async (req: Request, res: Response) => {
     const { title, price } = req.body;
 
+    // Calculate an expiration date for this account
+    const expiration = new Date();
+    expiration.setSeconds(expiration.getSeconds() + EXPIRATION_WINDOW_SECONDS);
+
     const transaction = Transaction.build({
       title,
       price,
       status: TransactionStatus.Created,
+      expiresAt: expiration,
       userId: req.currentUser!.id,
     });
     await transaction.save();
@@ -32,7 +39,10 @@ router.post(
       id: transaction.id,
       title: transaction.title,
       price: +transaction.price,
+      status: TransactionStatus.Created,
       userId: transaction.userId,
+      version: transaction.version,
+      expiresAt: transaction.expiresAt.toISOString(),
     });
 
     res.status(201).send(transaction);
