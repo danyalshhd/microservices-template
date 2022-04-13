@@ -1,17 +1,13 @@
 import express, { Request, Response } from 'express';
 const router = express.Router();
+const { poolData } = require('../config/cognito-config');
 const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
-const poolData = {
-  UserPoolId: process.env.AWS_POOL_ID,
-  ClientId: process.env.AWS_CLIENT_ID,
-};
-
-const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
 router.get('/api/users/signout', (req: Request, res: Response) => {
+  var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
   let cognitoUser = userPool.getCurrentUser();
   cognitoUser.signOut();
-  res.send(`Signout Successfully`);
+  res.status(200).send(userPool.getCurrentUser());
 });
 
 export { router as signoutRouter };

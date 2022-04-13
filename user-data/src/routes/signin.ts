@@ -35,7 +35,7 @@ router.post(
     var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
     cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: (result: any) => {
-            res.status(200).json({
+            res.status(200).header("authorization",result.getIdToken().getJwtToken()).json({
               "status": 1, "message": "user signed in successfully ", "data": {
                   "idToken": result.getIdToken().getJwtToken(),
                   "accessToken": result.getAccessToken().getJwtToken(),
@@ -47,6 +47,7 @@ router.post(
           res.status(200).json({ "status": 0, "message": "User sign in failed "+err });
         },
     });
+    // res.setHeader("authorization",head);
 });
 
 
