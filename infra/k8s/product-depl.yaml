@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product
+  template:
+    metadata:
+      labels:
+        app: product
+    spec:
+      containers:
+        - name: product
+          image: digicel/product:latest
+          env:
+            - name: AWS_BUCKET_NAME
+              value: ''
+            - name: AWS_BUCKET_REGION
+              value: ''
+            - name: ACCESS_KEY_ID
+              value: ''
+            - name: AWS_SECRET_ACCESS_KEY
+              value: ''
+            - name: TWILIO_ACCOUNT_SID
+              value: ''
+            - name: TWILIO_AUTH_TOKEN
+              value: ''
+            - name: ONFIDO_API_TOKEN
+              value: ''
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-srv
+spec:
+  selector:
+    app: product
+  ports:
+    - name: product
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
