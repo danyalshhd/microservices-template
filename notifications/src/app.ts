@@ -2,8 +2,8 @@ import express from 'express';
 import 'express-async-errors';
 import { json } from 'body-parser';
 import { errorHandler, NotFoundError } from '@dstransaction/common';
-import { indexNotificationRouter } from '../routes';
-import { showNotificationRouter } from '../routes/show';
+import { indexNotificationRouter } from './routes/index';
+import { showNotificationRouter } from './routes/show';
 
 const app = express();
 app.set('trust proxy', true);
