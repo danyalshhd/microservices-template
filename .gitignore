@@ -11,3 +11,6 @@ common/package-lock.json
 
 accounts/node_modules
 accounts/package-lock.json
+
+notifications/node_modules
+notifications/package-lock.json

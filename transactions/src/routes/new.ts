@@ -3,6 +3,7 @@ import { body } from 'express-validator';
 import { requireAuth, validateRequest, TransactionStatus } from '@dstransaction/common';
 import { Transaction } from '../models/transaction';
 import { TransactionCreatedPublisher } from '../events/publishers/transaction-created-publisher';
+import { NotificationCreatedPublisher } from '../events/publishers/notification-created-publisher';
 import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
@@ -42,9 +43,14 @@ router.post(
       status: TransactionStatus.Created,
       userId: transaction.userId,
       version: transaction.version,
-      expiresAt: transaction.expiresAt.toISOString(),
+      expiresAt: transaction.expiresAt.toISOString()
     });
 
+    await new NotificationCreatedPublisher(natsWrapper.client).publish({
+      id:transaction.userId,
+      title:transaction.title,
+      createdAt: new Date()
+    })
     res.status(201).send(transaction);
   }
 );
