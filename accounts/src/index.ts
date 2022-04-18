@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
-import { app } from './app';
+import { app } from './app';import { randomBytes } from 'crypto';
 import { natsWrapper } from './nats-wrapper';
+import { TransactionCreatedListener } from './events/listeners/transaction-created-listener';
+import { TransactionUpdatedListener } from './events/listeners/transaction-updated-listener';
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
@@ -20,7 +22,8 @@ const start = async () => {
   }
 
   try {
-    await natsWrapper.connect(process.env.NATS_CLUSTER_ID, process.env.NATS_CLIENT_ID, process.env.NATS_URL);
+    console.log(process.env.NATS_CLUSTER_ID);
+    await natsWrapper.connect(process.env.NATS_CLUSTER_ID.trim(), randomBytes(4).toString('hex'), process.env.NATS_URL);
 
     natsWrapper.client.on('close', () => {
       console.log('NATS connection closed');
@@ -28,6 +31,9 @@ const start = async () => {
     });
     process.on('SIGINIT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());
+
+    new TransactionCreatedListener(natsWrapper.client).listen();
+    new TransactionUpdatedListener(natsWrapper.client).listen();
 
     await mongoose.connect(process.env.MONGO_URI);
     console.log('Connected to MongoDb');

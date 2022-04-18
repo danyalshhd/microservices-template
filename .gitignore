@@ -9,5 +9,11 @@ transactions/package-lock.json
 common/node_modules
 common/package-lock.json
 
-product/node_modules
-product/package-lock.json
+# product/node_modules
+# product/package-lock.json
+
+accounts/node_modules
+accounts/package-lock.json
+
+notifications/node_modules
+notifications/package-lock.json

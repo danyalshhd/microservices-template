@@ -3,10 +3,10 @@ import 'express-async-errors';
 import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 import { errorHandler, NotFoundError, currentUser } from '@dstransaction/common';
-import { createTransactionRouter } from './routes/new';
-import { showTransactionRouter } from './routes/show';
-import { indexTransactionRouter } from './routes/index';
-import { updateTransactionRouter } from './routes/update';
+import { deleteAccountRouter } from './routes/delete';
+import { newAccountRouter } from './routes/new';
+import { showAccountsRouter } from './routes/show';
+import { indexAccountRouter } from './routes';
 
 const app = express();
 app.set('trust proxy', true);
@@ -21,10 +21,10 @@ app.use(
 
 app.use(currentUser);
 
-app.use(createTransactionRouter);
-app.use(showTransactionRouter);
-app.use(indexTransactionRouter);
-app.use(updateTransactionRouter);
+app.use(deleteAccountRouter);
+app.use(newAccountRouter);
+app.use(showAccountsRouter);
+app.use(indexAccountRouter);
 
 app.all('*', async (req, res) => {
   throw new NotFoundError();

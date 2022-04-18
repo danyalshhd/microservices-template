@@ -17,18 +17,32 @@ spec:
                 name: auth-srv
                 port:
                   number: 3000
-          - path: /api/onfido/?(.*)
-            pathType: Prefix
-            backend:
-              service:
-                name: auth-srv
-                port:
-                  number: 3000
           - path: /api/transactions/?(.*)
             pathType: Prefix
             backend:
               service:
                 name: transactions-srv
+                port:
+                  number: 3000
+          - path: /api/accounts/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: accounts-srv
+                port:
+                  number: 3000
+          - path: /api/notifications/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: notifications-srv
+                port:
+                  number: 3000
+          - path: /api/onfido/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-srv
                 port:
                   number: 3000
           - path: /api/product/?(.*)

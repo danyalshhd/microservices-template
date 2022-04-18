@@ -1,0 +1,10 @@
+auth/node_modules
+auth/package-lock.json
+
+nats-test
+
+transactions/node_modules
+transactions/package-lock.json
+
+common/node_modules
+common/package-lock.json

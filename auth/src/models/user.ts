@@ -19,11 +19,49 @@ interface UserModel extends mongoose.Model<UserDoc> {
 interface UserDoc extends mongoose.Document {
   email: string;
   password: string;
+  onfidoApplicantId: string;
+  onfidoCheckId: string;
   upgradeToMax: string;
+  firstName: string;
+  lastName: string;
+  dob: string;
+  trnNumber: string;
+  streetAddress: Address;
+  sourceOfIncome: string;
+  profilePicture: string;
 }
+
+interface Address {
+  parish: string;
+  town: string;
+  fullAddress: string;
+}
+
+const addressSchema = new mongoose.Schema(
+  {
+    parish: {
+      type: String,
+    },
+    town: {
+      type: String,
+    },
+    fullAddress: {
+      type: String,
+    },
+  },
+  { _id: false }
+);
 
 const userSchema = new mongoose.Schema(
   {
+    email: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
     phoneNumber: {
       type: String,
     },
@@ -39,18 +77,25 @@ const userSchema = new mongoose.Schema(
     trnNumber: {
       type: String,
     },
-    email: {
-      type: String,
-      required: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
     upgradeToMax: {
       type: String,
       enum: ['disabled', 'in_progress', 'enabled'],
       default: 'disabled',
+    },
+    streetAddress: {
+      type: addressSchema,
+    },
+    sourceofIncome: {
+      type: String,
+    },
+    profilePicture: {
+      type: String,
+    },
+    onfidoApplicantId: {
+      type: String,
+    },
+    onfidoCheckId: {
+      type: String,
     },
   },
   {

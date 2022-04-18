@@ -1,28 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: product-mongo-depl
+  name: accounts-mongo-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: product-mongo
+      app: accounts-mongo
   template:
     metadata:
       labels:
-        app: product-mongo
+        app: accounts-mongo
     spec:
       containers:
-        - name: product-mongo
+        - name: accounts-mongo
           image: mongo
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: product-mongo-srv
+  name: accounts-mongo-srv
 spec:
   selector:
-    app: product-mongo
+    app: accounts-mongo
   ports:
     - name: db
       protocol: TCP

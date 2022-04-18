@@ -17,19 +17,27 @@ spec:
           image: digicel/auth:latest
           env:
             - name: AWS_BUCKET_NAME
-              value: ''
+              value: 'digicell-bucket'
             - name: AWS_BUCKET_REGION
-              value: ''
+              value: 'ap-southeast-1'
             - name: ACCESS_KEY_ID
-              value: ''
+              value: 'AKIARJ5OYBXGRVHTQM6W'
             - name: AWS_SECRET_ACCESS_KEY
-              value: ''
+              value: 'Ch99ubxtK8aj24JFFqnKxjYs5o0KJCsKXCVmTA0j'
             - name: TWILIO_ACCOUNT_SID
               value: ''
             - name: TWILIO_AUTH_TOKEN
               value: ''
             - name: ONFIDO_API_TOKEN
-              value: ''
+              value: 'api_sandbox_us.5KyZsPeogLb.dPJI2tWP_LxvWExZ8XqkrM5JDfmd0Jju'
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL
+              value: 'http://nats-srv:4222'
+            - name: NATS_CLUSTER_ID
+              value: digicel
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:

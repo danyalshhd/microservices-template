@@ -1,0 +1,1 @@
+docker build -t digicel/accounts . -f DockerFile

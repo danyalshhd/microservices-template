@@ -7,6 +7,8 @@ import {
   NotAuthorizedError,
 } from '@dstransaction/common';
 import { Transaction } from '../models/transaction';
+import { TransactionUpdatedPublisher } from '../events/publishers/transaction-updated-publisher';
+import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
 
@@ -36,6 +38,14 @@ router.put(
       price: req.body.price,
     });
     await transaction.save();
+
+    new TransactionUpdatedPublisher(natsWrapper.client).publish({
+      id: transaction.id,
+      title: transaction.title,
+      price: transaction.price,
+      userId: transaction.userId,
+      version: transaction.version,
+    })
 
     res.send(transaction);
   }

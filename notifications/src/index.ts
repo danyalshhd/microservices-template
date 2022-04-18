@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import { app } from './app';
+import { NotificationCreatedListener } from './events/listeners/notification-created-listener';
+import { initializeFirebaseSDK } from './firebase/firebase';
 import { natsWrapper } from './nats-wrapper';
 
 const start = async () => {
@@ -20,7 +22,11 @@ const start = async () => {
   }
 
   try {
-    await natsWrapper.connect(process.env.NATS_CLUSTER_ID, process.env.NATS_CLIENT_ID, process.env.NATS_URL);
+    await natsWrapper.connect(
+      process.env.NATS_CLUSTER_ID,
+      process.env.NATS_CLIENT_ID,
+      process.env.NATS_URL
+    );
 
     natsWrapper.client.on('close', () => {
       console.log('NATS connection closed');
@@ -28,6 +34,9 @@ const start = async () => {
     });
     process.on('SIGINIT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());
+
+    initializeFirebaseSDK(JSON.parse(process.env.FIREBASE_CERT!));
+    new NotificationCreatedListener(natsWrapper.client).listen();
 
     await mongoose.connect(process.env.MONGO_URI);
     console.log('Connected to MongoDb');
