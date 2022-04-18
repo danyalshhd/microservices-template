@@ -25,14 +25,14 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
-    - image: digicel/product
-      context: product
-      docker:
-        dockerfile: DockerFile
-      sync:
-        manual:
-          - src: 'src/**/*.ts'
-            dest: .
+    # - image: digicel/product
+    #   context: product
+    #   docker:
+    #     dockerfile: DockerFile
+    #   sync:
+    #     manual:
+    #       - src: 'src/**/*.ts'
+    #         dest: .
     - image: digicel/accounts
       context: accounts
       docker:

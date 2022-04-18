@@ -1,7 +1,7 @@
 import { BadRequestError, validateRequest } from '@dstransaction/common';
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
-import { Category } from '../models/category';
+import { Category } from '../../models/user-configuration/category';
 const router = express.Router();
 
 router.post(
