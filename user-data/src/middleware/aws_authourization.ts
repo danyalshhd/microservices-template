@@ -5,7 +5,7 @@ const request = require('request');
 
 exports.default = () => {
     return (req: any, res: any, next: any) => {
-        const decodedJwt = jwt.decode(req.headers['authorization'], {complete: true});
+        const decodedJwt = jwt.decode(req.cookies['idToken'], {complete: true});
         //console.log(decodedJwt);
         if (!decodedJwt) {
             res.status(200).json({ "status": 0, "message": "Not a valid JWT Token" });
@@ -40,7 +40,7 @@ exports.default = () => {
                     res.status(200).json({ "status": 0, "message": "Invalid token: Unauthorized" });
                     return;
                 }
-                jwt.verify(req.headers['authorization'], pem, (err: any, decoded: any) => {
+                jwt.verify(req.cookies['idToken'], pem, (err: any, decoded: any) => {
                     if (err) {
                         res.status(200).json({ "status": 0, "message": "Token validation failed" });
                     }  

@@ -1,34 +1,27 @@
 import express, { Request, Response } from 'express';
 const router = express.Router();
 const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
-const poolData = {
-  UserPoolId: process.env.AWS_POOL_ID,
-  ClientId: process.env.AWS_CLIENT_ID,
-};
-
-const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-import { NotFoundError } from '@dstransaction/common';
+const { poolData } = require('../config/cognito-config');
+import { User } from '../models/user';
 
 router.post('/api/users/signup', (req: Request, res: Response) => {
-  try {
-    let { email, password } = req.body;
-    const emailData = {
-      Name: "email",
-      Value: email,
-    };
-    const emailAttribute = new AmazonCognitoIdentity.CognitoUserAttribute(
-      emailData
-    );
-    userPool.signUp(email, password, [emailAttribute], null, (err: any, data: any) => {
-      if (err) {
-        throw new NotFoundError ();
-      }
-      res.send(data);
-    });
-  } catch (error) {
-    throw new NotFoundError ();
-  }
-
+  let { phone_number,email, password } = req.body;
+  let attributeList: any = [];
+  var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+  attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({ Name: "phone_number", Value: phone_number }));
+  attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({ Name: "email", Value: email }));
+  userPool.signUp(phone_number, password, attributeList, null, async (err: any, data: any) => {
+    if (err) {
+      console.log('Error: ',err);
+      res.send(err);
+    }
+//     const user = User.build({
+//   email, phone_number,
+//   deviceID: ['u1'],
+//   loginAttempt: 'checking'
+// });
+//     await user.save();
+    res.send(`OTP sent to ${data.codeDeliveryDetails.Destination}`);
+  });
 });
-
 export { router as signupRouter };
