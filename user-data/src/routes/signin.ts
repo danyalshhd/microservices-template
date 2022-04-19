@@ -1,6 +1,5 @@
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
-const moment = require('moment');
 const router = express.Router();
 const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
 const { poolData } = require('../config/cognito-config');
@@ -10,10 +9,9 @@ import { User } from '../models/user';
 router.post(
   '/api/users/signin',
   [
-    //! Commented Email Because Right Now We Are Signing Up Based On Phone-Number
-    // body('email')
-    // .isEmail()
-    // .withMessage('Email must be valid'),
+    body('phone_number')
+      .isMobilePhone('any',{strictMode: true})
+      .withMessage('Please provide a valid phone number'),
     body('password')
       .trim()
       .notEmpty()

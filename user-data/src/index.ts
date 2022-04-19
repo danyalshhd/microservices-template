@@ -13,7 +13,6 @@ import { signoutRouter } from './routes/signout';
 import { signupRouter } from './routes/signup';
 import { forgotpasswordRouter } from './routes/forgotPassowrd';
 import { errorHandler, NotFoundError } from '@dstransaction/common';
-import {confirmationRouter} from './routes/confirmation';
 import {resendOTPRouter} from './routes/resendOTP';
 import {changePasswordRouter} from './routes/changePassword';
 
@@ -45,7 +44,6 @@ app.use(signinRouter);
 app.use(signoutRouter);
 app.use(signupRouter);
 app.use(forgotpasswordRouter);
-app.use(confirmationRouter);
 app.use(resendOTPRouter);
 app.use(changePasswordRouter);
 
