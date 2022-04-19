@@ -52,7 +52,11 @@ router.post("/api/users/newpassword",  [
             {
                 res.clearCookie("idToken").status(200).json({ "status": 1, "message": "Password changed" });
             }
-            res.send(`Password for ${phone_number} has been reset successfully.`);
+            else
+            {
+                res.status(200).json({ "status": 1, "message": "Password changed" });
+            }
+            // res.send(`Password for ${phone_number} has been reset successfully.`);
         },
         onFailure: (err: any) => {
             res.send(err);

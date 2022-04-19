@@ -41,7 +41,11 @@ router.post("/api/users/changepassword",  [
             {
               res.clearCookie("idToken").status(200).json({ "status": 1, "message": "Password changed" });
             }
-            res.status(200).json({ "status": 1, "message": "Password changed" });
+            else
+            {
+              res.status(200).json({ "status": 1, "message": "Password changed" });
+            }
+            
           }
         });
       },
