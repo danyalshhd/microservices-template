@@ -11,12 +11,12 @@ import { signupRouter } from './routes/signup';
 import { errorHandler, NotFoundError } from '@dstransaction/common';
 
 const app = express();
-app.set('trust proxy', true);
+//app.set('trust proxy', true);
 app.use(json());
 app.use(
   cookieSession({
     signed: false,
-    secure: true,
+    secure: false,
     name: 'session'
   })
 );
@@ -46,12 +46,12 @@ const start = async () => {
 //     throw new Error('MONGO_URI must be defined');
 //   }
 
-//   try {
-//     await mongoose.connect(process.env.MONGO_URI);
-//     console.log('Connected to MongoDb');
-//   } catch (err) {
-//     console.error(err);
-//   }
+   try {
+     await mongoose.connect('mongodb://172.31.52.200:27017/auth');
+     console.log('Connected to MongoDb');
+   } catch (err) {
+     console.error(err);
+   }
 
   app.listen(3000, () => {
     console.log('Listening on port 3000!!!!!!!!');

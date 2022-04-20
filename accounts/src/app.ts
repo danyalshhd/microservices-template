@@ -9,12 +9,12 @@ import { showAccountsRouter } from './routes/show';
 import { indexAccountRouter } from './routes';
 
 const app = express();
-app.set('trust proxy', true);
+//app.set('trust proxy', true);
 app.use(json());
 app.use(
   cookieSession({
     signed: false,
-    secure: true,
+    secure: false,
     name: 'session'
   })
 );

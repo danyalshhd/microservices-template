@@ -20,7 +20,7 @@ const start = async () => {
 //   }
 
   try {
-    await natsWrapper.connect('digicel', process.env.NATS_CLIENT_ID, 'nats://localhost:4222');
+    await natsWrapper.connect('digicel', 'abc', 'nats://microservices-template-nats-streaming:4222');
 
     natsWrapper.client.on('close', () => {
       console.log('NATS connection closed');
@@ -29,8 +29,8 @@ const start = async () => {
     process.on('SIGINIT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());
 
-//     await mongoose.connect(process.env.MONGO_URI);
-//     console.log('Connected to MongoDb');
+     await mongoose.connect('mongodb://172.31.52.200:27017/transactions');
+     console.log('Connected to MongoDb');
   } catch (err) {
     console.error(err);
   }
