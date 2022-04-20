@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  accounts:
+    build: ./accounts
+    environment:
+      - JWT_KEY=abc
+    ports:
+      - 3001:3000
+
+  auth:
+    build: ./auth
+    environment:
+      - JWT_KEY=abc
+    ports: 
+      - 3000:3000
+
+  transactions:
+    build: ./transactions
+    environment: 
+      - JWT_KEY=abc
+    ports:
+      - 3002:3000
+
+  nats:
+    container_name: microservices-template-nats-streaming
+    image: nats-streaming:0.24-alpine
+    command:
+      ['-p','4222','-m','8222','-hbi','5s','-hbt','5s', '-hbf','2', '-SD','-cid','digicel',]
+
