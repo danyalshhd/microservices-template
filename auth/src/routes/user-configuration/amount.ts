@@ -11,10 +11,20 @@ router.post(
   async (req: Request, res: Response) => {
     try {
       const { amounts } = req.body;
-      const addAmounts = await Amount.insertMany(amounts);
-      res.status(201).send(addAmounts);
+      let bulkUpdates = amounts.map((obj: any) => {
+        return {
+          updateOne: {
+            filter: { amount: obj.amount },
+            update: { $set: { amount: obj.amount } },
+            upsert: true,
+          },
+        };
+      });
+      const addAmounts = await Amount.bulkWrite(bulkUpdates);
+      res.status(201).send(addAmounts.getUpsertedIds());
     } catch (error) {
       console.log(error);
+      console.log(res.statusCode);
       throw new BadRequestError('Unable to insert amounts.');
     }
   }

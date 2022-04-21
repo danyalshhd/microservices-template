@@ -22,6 +22,7 @@ const AmountSchema = new mongoose.Schema(
   {
     amount: {
       type: Number,
+      unique: true,
       required: true,
     },
   },
