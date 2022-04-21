@@ -27,7 +27,7 @@ router.delete(
     try {
       const { amounts } = req.body;
       const deleteAmounts = await Amount.deleteMany({
-        amount: { $in: amounts },
+        _id: { $in: amounts },
       });
       res.send(deleteAmounts);
     } catch (error) {
