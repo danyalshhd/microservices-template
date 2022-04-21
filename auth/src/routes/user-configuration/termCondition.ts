@@ -22,14 +22,12 @@ router.post(
 
 router.get(
   '/api/product/termCondition',
-  [body('condition').optional().isString()],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
       const { condition } = req.body;
       let queryObj: any = {};
-      condition && (queryObj.condition = condition);
-      let termConditions = await TermCondition.find(queryObj);
+      let termConditions = await TermCondition.findOne(queryObj);
       res.send(termConditions);
     } catch (error) {
       throw new BadRequestError('Unable to retrieve terms and conditions.');
@@ -39,18 +37,24 @@ router.get(
 
 router.put(
   '/api/product/termCondition',
-  [body('id').isString(), body('condition').optional().isString()],
+  [body('condition').optional().isString()],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { id, condition } = req.body;
+      const { condition } = req.body;
       let updateObj: any = {};
+      let filter: any = {};
       condition != null && (updateObj.condition = condition);
+      const findCondition = await TermCondition.findOne({});
+      if (findCondition) {
+        filter._id = findCondition.id;
+      }
       const updatedCondition = await TermCondition.findOneAndUpdate(
-        { _id: id },
+        filter,
         updateObj,
         {
           new: true,
+          upsert: true,
         }
       );
       res.send(updatedCondition);
