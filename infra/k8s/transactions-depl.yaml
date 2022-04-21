@@ -25,7 +25,7 @@ spec:
             - name: NATS_CLUSTER_ID
               value: digicel
             - name: MONGO_URI
-              value: 'mongodb://transactions-mongo-srv:27017/transactions'
+              value: 'mongodb://host.docker.internal:27017/transactions'
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
