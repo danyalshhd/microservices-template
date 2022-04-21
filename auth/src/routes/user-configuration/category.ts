@@ -6,15 +6,19 @@ const router = express.Router();
 
 router.post(
   '/api/product/category',
-  [body('name').isString(), body('visible').optional().isBoolean()],
+  [
+    body('name').isString(),
+    body('visible').optional().isBoolean(),
+    body('country').isAlpha(),
+  ],
   validateRequest,
   async (req: Request, res: Response) => {
-    const { name, visible = true } = req.body;
-    let existingCategory = await Category.findOne({ name });
+    const { name, country, visible = true } = req.body;
+    let existingCategory = await Category.findOne({ name, country });
     if (existingCategory) {
       throw new BadRequestError('Category with this name is already present.');
     }
-    const category = Category.build({ name, visible });
+    const category = Category.build({ name, country, visible });
     await category.save();
     res.status(201).send(category);
   }
@@ -22,14 +26,19 @@ router.post(
 
 router.get(
   '/api/product/category',
-  [body('name').optional().isString(), body('visible').optional().isBoolean()],
+  [
+    body('name').optional().isString(),
+    body('visible').optional().isBoolean(),
+    body('country').optional().isAlpha(),
+  ],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { name, visible } = req.body;
+      const { name, country, visible } = req.body;
       let queryObj: any = {};
-      name != null && (queryObj.name = name);
-      visible != null && (queryObj.visible = visible);
+      name && (queryObj.name = name);
+      country && (queryObj.country = country);
+      visible && (queryObj.visible = visible);
       let categories = await Category.find(queryObj);
       res.send(categories);
     } catch (error) {
@@ -43,6 +52,7 @@ router.put(
   [
     body('id').isString(),
     body('name').optional().isString(),
+    body('country').optional().isAlpha(),
     body('visible').optional().isBoolean(),
   ],
   validateRequest,

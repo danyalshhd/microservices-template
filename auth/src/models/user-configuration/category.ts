@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 // that are requried to create a new User
 interface CategoryAttrs {
   name: string;
+  country: string;
   visible: boolean;
 }
 
@@ -17,12 +18,17 @@ interface CategoryModel extends mongoose.Model<CategoryDoc> {
 // that a User Document has
 interface CategoryDoc extends mongoose.Document {
   name: string;
+  country: string;
   visible: boolean;
 }
 
 const categorySchema = new mongoose.Schema(
   {
     name: {
+      type: String,
+      required: true,
+    },
+    country: {
       type: String,
       required: true,
     },

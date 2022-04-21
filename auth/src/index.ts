@@ -10,12 +10,25 @@ import { signoutRouter } from './routes/signout';
 import { signupRouter } from './routes/signup';
 import { onfidoRouter } from './routes/onfido';
 import { categoryRouter } from './routes/user-configuration/category';
-import { paymentRouter } from './routes/user-configuration/payments';
+import { amountRouter } from './routes/user-configuration/amount';
+import { bankRouter } from './routes/user-configuration/bank';
+import { privacyPolicyRouter } from './routes/user-configuration/privacyPolicy';
+import { termConditionRouter } from './routes/user-configuration/termCondition';
+import { secretQuestionRouter } from './routes/user-configuration/secretQuestion';
+import { companyRouter } from './routes/user-configuration/company';
+import { countryRouter } from './routes/user-configuration/country';
 import { editProfileRouter } from './routes/editProfile';
 import { imageRouter } from './routes/upload-image';
 import { errorHandler, NotFoundError } from '@dstransaction/common';
+const cors = require('cors');
 
 const app = express();
+const corsOptions = {
+  origin: '*',
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 app.set('trust proxy', true);
 app.use(json());
 app.use(
@@ -38,8 +51,14 @@ app.use(signupRouter);
 app.use(onfidoRouter);
 app.use(imageRouter);
 app.use(editProfileRouter);
-app.use(paymentRouter);
+app.use(amountRouter);
 app.use(categoryRouter);
+app.use(bankRouter);
+app.use(privacyPolicyRouter);
+app.use(termConditionRouter);
+app.use(companyRouter);
+app.use(secretQuestionRouter);
+app.use(countryRouter);
 app.all('*', async (req, res) => {
   throw new NotFoundError();
 });

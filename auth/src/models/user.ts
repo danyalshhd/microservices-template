@@ -85,7 +85,7 @@ const userSchema = new mongoose.Schema(
     streetAddress: {
       type: addressSchema,
     },
-    sourceofIncome: {
+    sourceOfIncome: {
       type: String,
     },
     profilePicture: {

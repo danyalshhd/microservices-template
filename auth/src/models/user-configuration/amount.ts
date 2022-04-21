@@ -2,23 +2,23 @@ import mongoose from 'mongoose';
 
 // An interface that describes the properties
 // that are requried to create a new User
-interface PaymentAttrs {
+interface AmountAttrs {
   amount: Number;
 }
 
 // An interface that describes the properties
 // that a User Model has
-interface PaymentModel extends mongoose.Model<PaymentDoc> {
-  build(attrs: PaymentAttrs): PaymentDoc;
+interface AmountModel extends mongoose.Model<AmountDoc> {
+  build(attrs: AmountAttrs): AmountDoc;
 }
 
 // An interface that describes the properties
 // that a User Document has
-interface PaymentDoc extends mongoose.Document {
+interface AmountDoc extends mongoose.Document {
   amount: Number;
 }
 
-const paymentSchema = new mongoose.Schema(
+const AmountSchema = new mongoose.Schema(
   {
     amount: {
       type: Number,
@@ -36,13 +36,10 @@ const paymentSchema = new mongoose.Schema(
   }
 );
 
-paymentSchema.statics.build = (attrs: PaymentAttrs) => {
-  return new Payment(attrs);
+AmountSchema.statics.build = (attrs: AmountAttrs) => {
+  return new Amount(attrs);
 };
 
-const Payment = mongoose.model<PaymentDoc, PaymentModel>(
-  'Payment',
-  paymentSchema
-);
+const Amount = mongoose.model<AmountDoc, AmountModel>('Amount', AmountSchema);
 
-export { Payment };
+export { Amount };

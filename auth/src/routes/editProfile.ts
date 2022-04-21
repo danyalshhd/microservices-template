@@ -26,21 +26,23 @@ const upload = multer({
   },
 });
 
-interface MulterRequest extends Request {
-  file: any;
-}
-
 router.put(
   '/api/users/editProfile',
   validateRequest,
   upload.single('image'),
+  [
+    body('userId').isString(),
+    body('sourceOfIncome').optional().isAlpha(),
+    body('streetAddress').optional().isObject(),
+    body('email').optional().isEmail(),
+  ],
   async (req: Request, res: Response) => {
     try {
       const { userId, sourceOfIncome, streetAddress, email } = req.body;
       let update: any = {};
       let addressKeys: any = [];
-      sourceOfIncome && (update.sourceOfIncome = sourceOfIncome);
-      email && (update.email = email);
+      sourceOfIncome != null && (update.sourceOfIncome = sourceOfIncome);
+      email != null && (update.email = email);
       streetAddress && (addressKeys = Object.keys(streetAddress));
       addressKeys.length > 0 && (update.streetAddress = {});
       if (addressKeys.length > 0) {
@@ -58,6 +60,7 @@ router.put(
         { _id: userId },
         convertToDotNotation(update)
       );
+      console.log(JSON.stringify(convertToDotNotation(update)));
       res.send(userUpdate);
     } catch (error) {
       throw new BadRequestError('Unable to edit profile.');

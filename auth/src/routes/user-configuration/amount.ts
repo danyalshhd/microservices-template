@@ -1,18 +1,18 @@
 import { BadRequestError, validateRequest } from '@dstransaction/common';
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
-import { Payment } from '../../models/user-configuration/payment';
+import { Amount } from '../../models/user-configuration/amount';
 const router = express.Router();
 
 router.post(
-  '/api/product/payment',
+  '/api/product/amount',
   [body('amounts').isArray(), body('visible').optional().isBoolean()],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
       const { amounts } = req.body;
-      const payments = await Payment.insertMany(amounts);
-      res.status(201).send(payments);
+      const addAmounts = await Amount.insertMany(amounts);
+      res.status(201).send(addAmounts);
     } catch (error) {
       console.log(error);
       throw new BadRequestError('Unable to insert amounts.');
@@ -21,20 +21,20 @@ router.post(
 );
 
 router.delete(
-  '/api/product/payment',
-  [body('amounts').isArray(), body('visible').optional().isBoolean()],
+  '/api/product/amount',
+  [body('amounts').isArray()],
   async (req: Request, res: Response) => {
     try {
       const { amounts } = req.body;
-      const deletePayments = await Payment.deleteMany({
+      const deleteAmounts = await Amount.deleteMany({
         amount: { $in: amounts },
       });
-      res.send(deletePayments);
+      res.send(deleteAmounts);
     } catch (error) {
       console.log(error);
-      throw new Error('Unable to delete payments');
+      throw new Error('Unable to delete amounts');
     }
   }
 );
 
-export { router as paymentRouter };
+export { router as amountRouter };
