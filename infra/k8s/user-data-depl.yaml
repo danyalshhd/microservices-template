@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-data-depl
+spec:
+  replicas: 1
+  selector: 
+    matchLabels: 
+      app: user-data
+  template:
+    metadata:
+      labels:
+        app: user-data
+    spec:
+      containers:
+        - name: user-data
+          image: digicel/user-data:latest
+          env:
+            - name: AWS_CLIENT_ID
+              value: '947nv76mqmhra1umjl1gtv2f5'
+            - name: AWS_POOL_ID
+              value: 'us-east-1_rHsUZwqTt'
+            - name: AWS_REGION
+              value: 'us-east-1'
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-data-srv
+spec:
+  selector: 
+    app: user-data
+  ports:
+    - name: user-data
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
