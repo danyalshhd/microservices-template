@@ -1,5 +1,5 @@
-auth/node_modules
-auth/package-lock.json
+user-data/node_modules
+user-data/package-lock.json
 
 nats-test
 
