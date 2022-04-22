@@ -6,12 +6,12 @@ const router = express.Router();
 
 router.post(
   '/api/product/amount',
-  [body('amounts').isArray(), body('visible').optional().isBoolean()],
+  [body('amounts').isArray()],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
       const { amounts } = req.body;
-      let bulkUpdates = amounts.map((obj: any) => {
+      let bulkAdd = amounts.map((obj: any) => {
         return {
           updateOne: {
             filter: { amount: obj.amount },
@@ -20,12 +20,33 @@ router.post(
           },
         };
       });
-      const addAmounts = await Amount.bulkWrite(bulkUpdates);
-      res.status(201).send(addAmounts.getUpsertedIds());
+      const addAmounts = await Amount.bulkWrite(bulkAdd);
+      let addedAmounts = addAmounts.getUpsertedIds();
+      if (addedAmounts.length > 0) {
+        addedAmounts.forEach((obj: any) => {
+          delete Object.assign(obj, { ['id']: obj['_id'] })['_id'];
+          obj.amount = amounts[obj.index].amount;
+        });
+      }
+      res.status(201).send(addedAmounts);
     } catch (error) {
       console.log(error);
       console.log(res.statusCode);
       throw new BadRequestError('Unable to insert amounts.');
+    }
+  }
+);
+
+router.get(
+  '/api/product/amount',
+  validateRequest,
+  async (req: Request, res: Response) => {
+    try {
+      let queryObj: any = {};
+      let amounts = await Amount.find(queryObj);
+      res.send(amounts);
+    } catch (error) {
+      throw new BadRequestError('Unable to retrieve Amounts.');
     }
   }
 );

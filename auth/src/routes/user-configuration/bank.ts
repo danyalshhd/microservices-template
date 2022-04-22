@@ -6,17 +6,34 @@ const router = express.Router();
 
 router.post(
   '/api/product/bank',
-  [body('name').isString()],
+  [body('banks').isArray()],
   validateRequest,
   async (req: Request, res: Response) => {
-    const { name } = req.body;
-    let existingBank = await Bank.findOne({ name });
-    if (existingBank) {
-      throw new BadRequestError('Bank with this name is already present.');
+    try {
+      const { banks } = req.body;
+      let bulkAdd = banks.map((obj: any) => {
+        return {
+          updateOne: {
+            filter: { name: obj.name },
+            update: { $set: { name: obj.name } },
+            upsert: true,
+          },
+        };
+      });
+      const addBanks = await Bank.bulkWrite(bulkAdd);
+      let addedBanks = addBanks.getUpsertedIds();
+      console.log(addedBanks);
+      if (addedBanks.length > 0) {
+        addedBanks.forEach((bank: any) => {
+          delete Object.assign(bank, { ['id']: bank['_id'] })['_id'];
+          bank.name = banks[bank.index].name;
+        });
+      }
+      console.log(addedBanks);
+      res.status(201).send(addedBanks);
+    } catch (error) {
+      throw new BadRequestError('Unable to insert banks.');
     }
-    const bank = Bank.build({ name });
-    await bank.save();
-    res.status(201).send(bank);
   }
 );
 
@@ -39,7 +56,7 @@ router.get(
 
 router.put(
   '/api/product/bank',
-  [body('id').isString(), body('name').optional().isString()],
+  [body('id').isString(), body('name').isString()],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
@@ -72,3 +89,12 @@ router.delete(
 );
 
 export { router as bankRouter };
+
+// const { name } = req.body;
+// let existingBank = await Bank.findOne({ name });
+// if (existingBank) {
+//   throw new BadRequestError('Bank with this name is already present.');
+// }
+// const bank = Bank.build({ name });
+// await bank.save();
+// res.status(201).send(bank);
