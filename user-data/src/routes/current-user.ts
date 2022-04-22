@@ -7,7 +7,7 @@ const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
 
 
-router.get('/api/users/currentuser',validator.default(), (req: any, res: any) => {
+router.get('/api/users/currentuser', validator.default(), (req: any, res: any) => {
   res.send({ currentUser: userPool.getCurrentUser() || null });
 });
 

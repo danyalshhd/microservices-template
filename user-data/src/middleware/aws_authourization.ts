@@ -5,12 +5,12 @@ const request = require('request');
 
 exports.default = () => {
     return (req: any, res: any, next: any) => {
-        const decodedJwt = jwt.decode(req.cookies['idToken'], {complete: true});
+        const decodedJwt = jwt.decode(req.cookies['idToken'], { complete: true });
         //console.log(decodedJwt);
         if (!decodedJwt) {
             res.status(200).json({ "status": 0, "message": "Not a valid JWT Token" });
         }
-        if (decodedJwt.payload.iss !== 'https://cognito-idp.'+pool_region+'.amazonaws.com/'+poolData.UserPoolId) {
+        if (decodedJwt.payload.iss !== 'https://cognito-idp.' + pool_region + '.amazonaws.com/' + poolData.UserPoolId) {
             res.status(200).json({ "status": 0, "message": 'Invalid issuer: ' + decodedJwt.payload.iss });
         }
         if (!(decodedJwt.payload.token_use === 'id')) {
@@ -19,17 +19,17 @@ exports.default = () => {
         if (decodedJwt.payload.aud !== poolData.ClientId) {
             res.status(200).json({ "status": 0, "message": 'Invalid aud: ' + decodedJwt.payload.aud });
         }
-        request({url: 'https://cognito-idp.us-east-1.amazonaws.com/'+poolData.UserPoolId+'/.well-known/jwks.json', json: true}, (error: any, response: any, body: any) => {
+        request({ url: 'https://cognito-idp.us-east-1.amazonaws.com/' + poolData.UserPoolId + '/.well-known/jwks.json', json: true }, (error: any, response: any, body: any) => {
             if (!error && response.statusCode === 200) {
                 //console.log(body);
                 let pems: any = {};
                 var keys = body['keys'];
-                for(var i = 0; i < keys.length; i++) {
+                for (var i = 0; i < keys.length; i++) {
                     var key_id = keys[i].kid;
                     var modulus = keys[i].n;
                     var exponent = keys[i].e;
                     var key_type = keys[i].kty;
-                    var jwk = { kty: key_type, n: modulus, e: exponent};
+                    var jwk = { kty: key_type, n: modulus, e: exponent };
                     var pem = jwkToPem(jwk);
                     pems[key_id] = pem;
                 }
@@ -43,7 +43,7 @@ exports.default = () => {
                 jwt.verify(req.cookies['idToken'], pem, (err: any, decoded: any) => {
                     if (err) {
                         res.status(200).json({ "status": 0, "message": "Token validation failed" });
-                    }  
+                    }
                     console.log("JWT Validation passed");
                     next();
                 });
@@ -51,5 +51,5 @@ exports.default = () => {
                 res.status(200).json({ "status": 0, "message": "JWK json download failed" });
             }
         });
-        };
     };
+};
