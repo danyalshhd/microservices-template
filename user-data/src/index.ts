@@ -12,8 +12,8 @@ import { signoutRouter } from './routes/signout';
 import { signupRouter } from './routes/signup';
 import { forgotpasswordRouter } from './routes/forgotPassowrd';
 import { errorHandler, NotFoundError } from '@dstransaction/common';
-import {resendOTPRouter} from './routes/resendOTP';
-import {changePasswordRouter} from './routes/changePassword';
+import { resendOTPRouter } from './routes/resendOTP';
+import { changePasswordRouter } from './routes/changePassword';
 
 const app = express();
 app.use(cors());
@@ -57,12 +57,8 @@ const start = async () => {
   }
 
   try {
-<<<<<<< HEAD:auth/src/index.ts
-    await mongoose.connect(process.env.MONGO_URI);
-=======
-    await mongoose.connect('mongodb://host.docker.internal:27017/auth'); 
+    await mongoose.connect('mongodb://host.docker.internal:27017');
     // mongodb://auth-mongo-srv:27017/auth
->>>>>>> 1726e332f9d20333250b1e475ec8ceed2df9b0a0:user-data/src/index.ts
     console.log('Connected to MongoDb');
   } catch (err) {
     console.error(err);

@@ -10,11 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-<<<<<<< HEAD:auth/package.json
-    "@dstransaction/common": "^1.0.18",
-=======
     "@dstransaction/common": "^1.0.19",
->>>>>>> 1726e332f9d20333250b1e475ec8ceed2df9b0a0:user-data/package.json
     "@types/cookie-session": "^2.0.44",
     "@types/express": "^4.17.13",
     "@types/jsonwebtoken": "^8.5.8",
