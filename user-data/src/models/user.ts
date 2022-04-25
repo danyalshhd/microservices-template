@@ -1,11 +1,13 @@
 import mongoose from 'mongoose';
-import { Password } from '../services/password';
+// import { Password } from "../services/password";
 
 // An interface that describes the properties
 // that are requried to create a new User
 interface UserAttrs {
   email: string;
-  password: string;
+  phone_number: string;
+  // deviceID: [string];
+  // loginAttempt: string;
 }
 
 // An interface that describes the properties
@@ -29,6 +31,9 @@ interface UserDoc extends mongoose.Document {
   streetAddress: Address;
   sourceOfIncome: string;
   profilePicture: string;
+  phone_number: string;
+  // deviceID: [string];
+  // loginAttempt: string;
 }
 
 interface Address {
@@ -58,7 +63,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    password: {
+    phone_number: {
       type: String,
       required: true,
     },
@@ -97,6 +102,14 @@ const userSchema = new mongoose.Schema(
     onfidoCheckId: {
       type: String,
     },
+    // deviceID: {
+    //   type: [String],
+    //   required: true
+    // },
+    // loginAttempt: {
+    //   type:String,
+    //   required: true
+    // },
   },
   {
     toJSON: {
@@ -110,13 +123,13 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-userSchema.pre('save', async function (done) {
-  if (this.isModified('password')) {
-    const hashed = await Password.toHash(this.get('password'));
-    this.set('password', hashed);
-  }
-  done();
-});
+// userSchema.pre("save", async function (done) {
+//   if (this.isModified("password")) {
+//     const hashed = await Password.toHash(this.get("password"));
+//     this.set("password", hashed);
+//   }
+//   done();
+// });
 
 userSchema.statics.build = (attrs: UserAttrs) => {
   return new User(attrs);

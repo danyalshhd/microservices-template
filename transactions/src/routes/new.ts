@@ -35,7 +35,7 @@ router.post(
       userId: req.currentUser!.id,
     });
     await transaction.save();
-    
+
     await new TransactionCreatedPublisher(natsWrapper.client).publish({
       id: transaction.id,
       title: transaction.title,
@@ -43,7 +43,11 @@ router.post(
       status: TransactionStatus.Created,
       userId: transaction.userId,
       version: transaction.version,
+<<<<<<< HEAD
       expiresAt: transaction.expiresAt.toISOString()
+=======
+      expiresAt: transaction.expiresAt.toISOString(),
+>>>>>>> upstream/demo
     });
 
     await new NotificationCreatedPublisher(natsWrapper.client).publish({

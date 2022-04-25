@@ -1,3 +1,6 @@
+user-data/node_modules
+user-data/package-lock.json
+
 auth/node_modules
 auth/package-lock.json
 
