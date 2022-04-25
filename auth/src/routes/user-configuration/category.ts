@@ -58,10 +58,11 @@ router.put(
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { id, name, visible } = req.body;
+      const { id, name, country, visible } = req.body;
       let updateObj: any = {};
       name != null && (updateObj.name = name);
       visible != null && (updateObj.visible = visible);
+      country != null && (updateObj.country = country);
       const updatedCategory = await Category.findOneAndUpdate(
         { _id: id },
         updateObj,
@@ -81,7 +82,10 @@ router.delete(
   async (req: Request, res: Response) => {
     try {
       const { id } = req.body;
-      const deletedCategory = await Category.deleteOne({ _id: id });
+      const deletedCategory = await Category.findOneAndDelete({ _id: id });
+      if (!deletedCategory) {
+        throw new Error();
+      }
       res.send(deletedCategory);
     } catch (error) {
       throw new BadRequestError('Unable to delete Category.');

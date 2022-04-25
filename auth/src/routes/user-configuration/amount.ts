@@ -30,8 +30,6 @@ router.post(
       }
       res.status(201).send(addedAmounts);
     } catch (error) {
-      console.log(error);
-      console.log(res.statusCode);
       throw new BadRequestError('Unable to insert amounts.');
     }
   }

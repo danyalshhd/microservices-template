@@ -17,6 +17,7 @@ import { termConditionRouter } from './routes/user-configuration/termCondition';
 import { secretQuestionRouter } from './routes/user-configuration/secretQuestion';
 import { companyRouter } from './routes/user-configuration/company';
 import { countryRouter } from './routes/user-configuration/country';
+import { agentRouter } from './routes/user-configuration/agent';
 import { editProfileRouter } from './routes/editProfile';
 import { imageRouter } from './routes/upload-image';
 import { errorHandler, NotFoundError } from '@dstransaction/common';
@@ -59,6 +60,7 @@ app.use(termConditionRouter);
 app.use(companyRouter);
 app.use(secretQuestionRouter);
 app.use(countryRouter);
+app.use(agentRouter);
 app.all('*', async (req, res) => {
   throw new NotFoundError();
 });
