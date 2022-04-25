@@ -3,8 +3,12 @@ import mongoose from 'mongoose';
 // An interface that describes the properties
 // that are requried to create a new User
 interface AgentAttrs {
-  name: string;
-  address: string;
+  agentId: string;
+  agentName: string;
+  location: string;
+  bankId: string;
+  rating: Number;
+  coordinates: Coordinates;
 }
 
 // An interface that describes the properties
@@ -13,22 +17,57 @@ interface AgentModel extends mongoose.Model<AgentDoc> {
   build(attrs: AgentAttrs): AgentDoc;
 }
 
+interface Coordinates {
+  latitude: Number;
+  longitude: Number;
+}
+
 // An interface that describes the properties
 // that a User Document has
 interface AgentDoc extends mongoose.Document {
-  name: string;
-  address: string;
+  agentId: string;
+  agentName: string;
+  location: string;
+  bankId: string;
+  rating: Number;
+  coordinates: Coordinates;
 }
+
+const coordinatesSchema = new mongoose.Schema(
+  {
+    longitude: {
+      type: Number,
+    },
+    latitude: {
+      type: Number,
+    },
+  },
+  { _id: false }
+);
 
 const AgentSchema = new mongoose.Schema(
   {
-    name: {
+    agentId: {
       type: String,
       required: true,
     },
-    address: {
+    agentName: {
       type: String,
       required: true,
+    },
+    location: {
+      type: String,
+      required: true,
+    },
+    bankId: {
+      type: String,
+      required: true,
+    },
+    rating: {
+      type: Number,
+    },
+    coordinates: {
+      type: coordinatesSchema,
     },
   },
   {

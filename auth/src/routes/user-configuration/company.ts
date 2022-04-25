@@ -6,17 +6,25 @@ const router = express.Router();
 
 router.post(
   '/api/product/company',
-  [body('companyName').isString(), body('type').isString()],
+  [
+    body('companyName').isString(),
+    body('paymentType').isString(),
+    body('category').isString(),
+  ],
   validateRequest,
   async (req: Request, res: Response) => {
-    const { companyName, type } = req.body;
-    let existingCompany = await Company.findOne({ companyName, type });
+    const { companyName, paymentType, category } = req.body;
+    let existingCompany = await Company.findOne({
+      companyName,
+      paymentType,
+      category,
+    });
     if (existingCompany) {
       throw new BadRequestError(
         'Company with this companyName is already present.'
       );
     }
-    const company = Company.build({ companyName, type });
+    const company = Company.build({ companyName, paymentType, category });
     await company.save();
     res.status(201).send(company);
   }
@@ -26,15 +34,17 @@ router.get(
   '/api/product/company',
   [
     body('companyName').optional().isString(),
-    body('type').optional().isString(),
+    body('paymentType').optional().isString(),
+    body('category').optional().isString(),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { companyName, type } = req.body;
+      const { companyName, paymentType, category } = req.body;
       let queryObj: any = {};
       companyName && (queryObj.companyName = companyName);
-      type && (queryObj.type = type);
+      paymentType && (queryObj.paymentType = paymentType);
+      category && (queryObj.category = category);
       let companies = await Company.find(queryObj);
       res.send(companies);
     } catch (error) {
@@ -48,15 +58,17 @@ router.put(
   [
     body('id').isString(),
     body('companyName').optional().isString(),
-    body('type').optional().isString(),
+    body('paymentType').optional().isString(),
+    body('category').optional().isString(),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { id, companyName, type } = req.body;
+      const { id, companyName, paymentType, category } = req.body;
       let updateObj: any = {};
       companyName != null && (updateObj.companyName = companyName);
-      type != null && (updateObj.type = type);
+      paymentType != null && (updateObj.paymentType = paymentType);
+      category != null && (updateObj.category = category);
       const updatedCompany = await Company.findOneAndUpdate(
         { _id: id },
         updateObj,

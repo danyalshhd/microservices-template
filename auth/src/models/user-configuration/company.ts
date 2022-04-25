@@ -4,7 +4,8 @@ import mongoose from 'mongoose';
 // that are requried to create a new User
 interface CompanyAttrs {
   companyName: string;
-  type: string;
+  category: string;
+  paymentType: string;
 }
 
 // An interface that describes the properties
@@ -17,7 +18,8 @@ interface CompanyModel extends mongoose.Model<CompanyDoc> {
 // that a User Document has
 interface CompanyDoc extends mongoose.Document {
   companyName: string;
-  type: string;
+  category: string;
+  paymentType: string;
 }
 
 const CompanySchema = new mongoose.Schema(
@@ -26,7 +28,11 @@ const CompanySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    type: {
+    category: {
+      type: String,
+      required: true,
+    },
+    paymentType: {
       type: String,
       required: true,
     },
