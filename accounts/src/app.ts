@@ -7,10 +7,12 @@ import { deleteAccountRouter } from './routes/delete';
 import { newAccountRouter } from './routes/new';
 import { showAccountsRouter } from './routes/show';
 import { indexAccountRouter } from './routes';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 app.set('trust proxy', true);
 app.use(json());
+app.use(cookieParser());
 app.use(
   cookieSession({
     signed: false,

@@ -14,7 +14,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: auth-srv
+                name: user-data-srv
                 port:
                   number: 3000
           - path: /api/transactions/?(.*)
@@ -31,10 +31,10 @@ spec:
                 name: accounts-srv
                 port:
                   number: 3000
-          - path: /?(.*)
-            pathType: Prefix
-            backend:
-              service:
-                name: client-srv
-                port:
-                  number: 3000
+          # - path: /?(.*)
+          #   pathType: Prefix
+          #   backend:
+          #     service:
+          #       name: client-srv
+          #       port:
+          #         number: 3000

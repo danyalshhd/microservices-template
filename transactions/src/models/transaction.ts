@@ -4,18 +4,15 @@ import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 interface TransactionAttrs {
   title: string;
   price: number;
-  status: string;
   userId: string;
-  expiresAt: Date;
 }
 
 interface TransactionDoc extends mongoose.Document {
   title: string;
   price: number;
-  status: string;
   userId: string;
   version: number;
-  expiresAt: Date;
+  accountId?: string;
 }
 
 interface TransactionModel extends mongoose.Model<TransactionDoc> {
@@ -32,16 +29,16 @@ const transactionSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    status: {
-      type: String,
-      required: true
-    },
+    // status: {
+    //   type: String,
+    //   required: true
+    // },
     userId: {
       type: String,
       required: true,
     },
-    expiresAt: {
-      type: Date,
+    accountId: {
+      type: String,
       required: false,
     },
   },

@@ -1,15 +1,15 @@
 const express = require("express");
 const router = express.Router();
 import { body } from 'express-validator';
-import { validateRequest, BadRequestError } from '@dstransaction/common';
+import { validateRequest, BadRequestError, currentUser } from '@dstransaction/common';
 const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
 const { poolData } = require('../config/cognito-config');
 
 
-router.post("/api/users/changepassword", [
-  body('phone_number')
-    .isMobilePhone('any', { strictMode: true })
-    .withMessage('Please provide a valid phone number'),
+router.post("/api/users/changepassword", currentUser, [
+  // body('phone_number')
+  //   .isMobilePhone('any', { strictMode: true })
+  //   .withMessage('Please provide a valid phone number'),
   body('password')
     .trim()
     .notEmpty()
@@ -20,14 +20,14 @@ router.post("/api/users/changepassword", [
     .withMessage('You must supply a new password')
 ], validateRequest,
   async (req: any, res: any) => {
-    let { phone_number, password, newPassword } = req.body;
+    let { phone_number, email, password, newPassword } = req.body;
     let authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails({
-      Username: phone_number,
+      Username: phone_number || email,
       Password: password,
     });
     let userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     let userData = {
-      Username: phone_number,
+      Username: phone_number || email,
       Pool: userPool
     };
     let cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
@@ -35,13 +35,13 @@ router.post("/api/users/changepassword", [
       onSuccess: (result: any) => {
         cognitoUser.changePassword(password, newPassword, (err: any, result: any) => {
           if (err) {
-            res.status(200).json({ "status": 0, "message": "Password Change Failed" });
+            res.status(200).json({ "message": "Password Change Failed" });
           } else {
-            if (userPool.getCurrentUser() !== null) {
-              res.clearCookie("idToken").status(200).json({ "status": 1, "message": "Password changed" });
+            if (req.currentUser !== null) {
+              res.clearCookie("idToken").status(200).json({ "message": "Password changed" });
             }
             else {
-              res.status(200).json({ "status": 1, "message": "Password changed" });
+              res.status(200).json({ "message": "Password changed" });
             }
 
           }

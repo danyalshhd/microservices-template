@@ -8,3 +8,6 @@ transactions/package-lock.json
 
 accounts/node_modules
 accounts/package-lock.json
+
+expiration/node_modules
+expiration/package-lock.json

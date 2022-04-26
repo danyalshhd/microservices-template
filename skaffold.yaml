@@ -17,14 +17,14 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
-    - image: digicel/client
-      context: client
-      docker:
-        dockerfile: Dockerfile
-      sync:
-        manual:
-          - src: "**/*.js"
-            dest: .
+    # - image: digicel/client
+    #   context: client
+    #   docker:
+    #     dockerfile: Dockerfile
+    #   sync:
+    #     manual:
+    #       - src: "**/*.js"
+    #         dest: .
     - image: digicel/transactions
       context: transactions
       docker:
@@ -35,6 +35,14 @@ build:
             dest: .
     - image: digicel/accounts
       context: accounts
+      docker:
+        dockerfile: DockerFile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
+    - image: digicel/expiration
+      context: expiration
       docker:
         dockerfile: DockerFile
       sync:

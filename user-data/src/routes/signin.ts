@@ -9,9 +9,9 @@ import { User } from '../models/user';
 router.post(
   '/api/users/signin',
   [
-    body('phone_number')
-      .isMobilePhone('any', { strictMode: true })
-      .withMessage('Please provide a valid phone number'),
+    // body('phone_number')
+    //   .isMobilePhone('any', { strictMode: true })
+    //   .withMessage('Please provide a valid phone number'),
     body('password')
       .trim()
       .notEmpty()
@@ -19,9 +19,9 @@ router.post(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    let { phone_number, password } = req.body;
+    let { phone_number, email, password } = req.body;
     let authenticationData = {
-      Username: phone_number,
+      Username: phone_number || email,
       Password: password,
     };
     let authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(
@@ -29,7 +29,7 @@ router.post(
     );
     let userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     let userData = {
-      Username: phone_number,
+      Username: phone_number || email,
       Pool: userPool,
     };
     let cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
@@ -45,11 +45,11 @@ router.post(
           httpOnly: true,
           sameSite: "strict",
         }).json({
-          "status": 1, "message": "user signed in successfully "
+          "message": "user signed in successfully "
         });
       },
       onFailure: (err: any) => {
-        res.status(200).json({ "status": 0, "message": "User sign in failed " + err });
+        res.status(200).json({ "message": "User sign in failed " + err.message });
       },
     });
     // }

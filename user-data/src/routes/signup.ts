@@ -24,7 +24,7 @@ router.post('/api/users/signup', [
     let userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({ Name: "phone_number", Value: phone_number }));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({ Name: "email", Value: email }));
-    userPool.signUp(phone_number, password, attributeList, null, async (err: any, data: any) => {
+    userPool.signUp(email, password, attributeList, null, async (err: any, data: any) => {
       if (err) {
         console.log('Error: ', err);
         res.send(err);
@@ -35,16 +35,16 @@ router.post('/api/users/signup', [
       //   loginAttempt: 'checking'
       // });
       //     await user.save();
-      res.send(`OTP sent to ${data.codeDeliveryDetails.Destination}`);
+      res.status(201).send(`OTP sent to ${data.codeDeliveryDetails.Destination}`)
     });
   });
 
 router.post("/api/users/confirmation", async (req: Request, res: Response) => {
   try {
-    let { phone_number, code } = req.body;
+    let { phone_number, email, code } = req.body;
     const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     const userData = {
-      Username: phone_number,
+      Username: phone_number || email,
       Pool: userPool,
     };
     let cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
@@ -55,11 +55,10 @@ router.post("/api/users/confirmation", async (req: Request, res: Response) => {
         res.send(err.message)
         return;
       }
-      res.send(result);
+      res.status(200).send(result);
     });
-  } catch (error) {
-    console.error(error);
-    res.status(404);
+  } catch (error: any) {
+    throw new BadRequestError(error.message);
   }
 });
 

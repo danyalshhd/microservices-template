@@ -27,11 +27,6 @@ app.use(
     name: 'session'
   })
 );
-// app.use((req, res, next) => {
-//   console.log("333333333")
-//   console.log(req.session);
-//   console.log("333333333")
-// })
 
 app.use(currentUserRouter);
 app.use(signinRouter);
@@ -50,10 +45,6 @@ app.use(errorHandler);
 const start = async () => {
   if (!process.env.JWT_KEY) {
     throw new Error('JWT_KEY must be defined');
-  }
-
-  if (!process.env.MONGO_URI) {
-    throw new Error('MONGO_URI must be defined');
   }
 
   try {

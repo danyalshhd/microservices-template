@@ -1,17 +1,15 @@
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
-import { requireAuth, validateRequest, TransactionStatus } from '@dstransaction/common';
+import { requireAuth, TransactionStatus, validateRequest } from '@dstransaction/common';
 import { Transaction } from '../models/transaction';
 import { TransactionCreatedPublisher } from '../events/publishers/transaction-created-publisher';
 import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
 
-const EXPIRATION_WINDOW_SECONDS = 15 * 60;
-
 router.post(
   '/api/transactions',
-  requireAuth,
+  //requireAuth,
   [
     body('title').not().isEmpty().withMessage('Title is required'),
     body('price')
@@ -20,18 +18,14 @@ router.post(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
+    console.log("********************")
     const { title, price } = req.body;
-
-    // Calculate an expiration date for this account
-    const expiration = new Date();
-    expiration.setSeconds(expiration.getSeconds() + EXPIRATION_WINDOW_SECONDS);
 
     const transaction = Transaction.build({
       title,
       price,
-      status: TransactionStatus.Created,
-      expiresAt: expiration,
-      userId: req.currentUser!.id,
+      userId: '123',
+      //status: TransactionStatus.Created
     });
     await transaction.save();
 
@@ -39,10 +33,8 @@ router.post(
       id: transaction.id,
       title: transaction.title,
       price: +transaction.price,
-      status: TransactionStatus.Created,
       userId: transaction.userId,
       version: transaction.version,
-      expiresAt: transaction.expiresAt.toISOString(),
     });
 
     res.status(201).send(transaction);

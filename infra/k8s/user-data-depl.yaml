@@ -4,8 +4,8 @@ metadata:
   name: user-data-depl
 spec:
   replicas: 1
-  selector: 
-    matchLabels: 
+  selector:
+    matchLabels:
       app: user-data
   template:
     metadata:
@@ -17,11 +17,11 @@ spec:
           image: digicel/user-data:latest
           env:
             - name: AWS_CLIENT_ID
-              value: '947nv76mqmhra1umjl1gtv2f5'
+              value: "nagu8qk98nrsq5j5d0dj7abo1"
             - name: AWS_POOL_ID
-              value: 'us-east-1_rHsUZwqTt'
+              value: "us-east-1_VHjwDBnd3"
             - name: AWS_REGION
-              value: 'us-east-1'
+              value: "us-east-1"
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
@@ -33,7 +33,7 @@ kind: Service
 metadata:
   name: user-data-srv
 spec:
-  selector: 
+  selector:
     app: user-data
   ports:
     - name: user-data
