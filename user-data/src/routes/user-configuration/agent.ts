@@ -12,12 +12,21 @@ router.post(
     body('location').isString(),
     body('bankId').isString(),
     body('rating').isNumeric(),
-    body('coordinates').isObject(),
+    body('latitude').isNumeric(),
+    body('longitude').isNumeric(),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    const { agentId, agentName, location, bankId, rating, coordinates } =
-      req.body;
+    const {
+      agentId,
+      agentName,
+      location,
+      bankId,
+      rating,
+      latitude,
+      longitude,
+    } = req.body;
+    let coordinates: any = { latitude, longitude };
     let existingAgent = await Agent.findOne({ agentId });
     if (existingAgent) {
       throw new BadRequestError('Agent with this ID already exists');
@@ -69,25 +78,40 @@ router.put(
     body('location').optional().isString(),
     body('bankId').optional().isString(),
     body('rating').optional().isNumeric(),
-    body('coordinates').optional().isObject(),
+    body('latitude').optional().isNumeric(),
+    body('longitude').optional().isNumeric(),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { id, agentId, agentName, location, bankId, rating, coordinates } =
-        req.body;
+      const {
+        id,
+        agentId,
+        agentName,
+        location,
+        bankId,
+        rating,
+        latitude,
+        longitude,
+      } = req.body;
+      let coordinates: any = {};
+      (latitude != null || latitude === 0) && (coordinates.latitude = latitude);
+      (longitude != null || longitude === 0) &&
+        (coordinates.longitude = longitude);
+      console.log(coordinates);
       let updateObj: any = {};
       let coordinatesKeys: any = [];
       agentId && (updateObj.agentId = agentId);
       agentName && (updateObj.agentName = agentName);
       bankId && (updateObj.bankId = bankId);
-      rating != null && (updateObj.rating = rating);
+      (rating != null || rating === 0) && (updateObj.rating = rating);
       location && (updateObj.location = location);
       coordinates && (coordinatesKeys = Object.keys(coordinates));
       coordinatesKeys.length > 0 && (updateObj.coordinates = {});
       if (coordinatesKeys.length > 0) {
         for (let i = 0; i < coordinatesKeys.length; i++) {
-          coordinates[coordinatesKeys[i]] &&
+          (coordinates[coordinatesKeys[i]] != null ||
+            coordinates[coordinatesKeys[i]] === 0) &&
             (updateObj.coordinates[coordinatesKeys[i]] =
               coordinates[coordinatesKeys[i]]);
         }
