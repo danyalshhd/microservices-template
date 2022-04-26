@@ -38,4 +38,11 @@ spec:
                 name: notifications-srv
                 port:
                   number: 3000
+          - path: /api/cash/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: cash-srv
+                port:
+                  number: 3000
           

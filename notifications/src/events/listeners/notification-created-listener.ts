@@ -10,7 +10,6 @@ export class NotificationCreatedListener extends Listener<NotificationCreatedEve
 
     
     try{
-      console.log('hello world');
       const title=dat.title;
       const body="this is a sample notification";
       const data={timeStamp:String(dat.createdAt)}

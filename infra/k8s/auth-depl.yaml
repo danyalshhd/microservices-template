@@ -17,7 +17,7 @@ spec:
           image: digicel/auth:latest
           env:
             - name: MONGO_URI
-              value: 'mongodb://host.docker.internal:27017/auth'
+              value: 'mongodb://host.docker.internal:27017/digicel'
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
