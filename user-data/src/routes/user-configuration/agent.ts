@@ -101,9 +101,9 @@ router.put(
       console.log(coordinates);
       let updateObj: any = {};
       let coordinatesKeys: any = [];
-      agentId && (updateObj.agentId = agentId);
-      agentName && (updateObj.agentName = agentName);
-      bankId && (updateObj.bankId = bankId);
+      agentId != null && (updateObj.agentId = agentId);
+      agentName != null && (updateObj.agentName = agentName);
+      bankId != null && (updateObj.bankId = bankId);
       (rating != null || rating === 0) && (updateObj.rating = rating);
       location && (updateObj.location = location);
       coordinates && (coordinatesKeys = Object.keys(coordinates));
