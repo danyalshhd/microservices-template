@@ -49,3 +49,19 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: digicel/notifications
+      context: notifications
+      docker:
+        dockerfile: DockerFile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
+    - image: digicel/cash
+      context: cash
+      docker:
+        dockerfile: DockerFile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
