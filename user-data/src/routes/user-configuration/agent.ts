@@ -121,6 +121,9 @@ router.put(
         convertToDotNotation(updateObj),
         { new: true }
       );
+      if (!updatedAgent) {
+        throw new Error();
+      }
       res.send(updatedAgent);
     } catch (error) {
       throw new BadRequestError('Unable to update Agent.');

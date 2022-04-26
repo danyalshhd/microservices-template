@@ -76,6 +76,9 @@ router.put(
           new: true,
         }
       );
+      if (!updatedCompany) {
+        throw new Error();
+      }
       res.send(updatedCompany);
     } catch (error) {
       throw new BadRequestError('Unable to update Company.');

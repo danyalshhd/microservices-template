@@ -68,6 +68,9 @@ router.put(
         updateObj,
         { new: true }
       );
+      if (!updatedCategory) {
+        throw new Error();
+      }
       res.send(updatedCategory);
     } catch (error) {
       throw new BadRequestError('Unable to update Category.');

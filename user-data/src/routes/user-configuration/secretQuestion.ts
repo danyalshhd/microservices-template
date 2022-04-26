@@ -53,6 +53,9 @@ router.put(
           new: true,
         }
       );
+      if (!updatedQuestion) {
+        throw new Error();
+      }
       res.send(updatedQuestion);
     } catch (error) {
       throw new BadRequestError('Unable to update Question.');

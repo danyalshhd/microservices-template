@@ -6,46 +6,61 @@ const router = express.Router();
 
 router.post(
   '/api/product/bank',
-  [body('banks').isArray()],
+  [
+    body('bankName').isString(),
+    body('bankCode').isString(),
+    body('bankSwiftCode').isString(),
+    body('institutionId').isString(),
+    body('hintText').optional().isString(),
+    body('accountMessageFormat').isString(),
+    body('accountNumberLength').isNumeric(),
+  ],
   validateRequest,
   async (req: Request, res: Response) => {
-    try {
-      const { banks } = req.body;
-      let bulkAdd = banks.map((obj: any) => {
-        return {
-          updateOne: {
-            filter: { name: obj.name },
-            update: { $set: { name: obj.name } },
-            upsert: true,
-          },
-        };
-      });
-      const addBanks = await Bank.bulkWrite(bulkAdd);
-      let addedBanks = addBanks.getUpsertedIds();
-      console.log(addedBanks);
-      if (addedBanks.length > 0) {
-        addedBanks.forEach((bank: any) => {
-          delete Object.assign(bank, { ['id']: bank['_id'] })['_id'];
-          bank.name = banks[bank.index].name;
-        });
-      }
-      console.log(addedBanks);
-      res.status(201).send(addedBanks);
-    } catch (error) {
-      throw new BadRequestError('Unable to insert banks.');
+    const {
+      bankName,
+      bankCode,
+      bankSwiftCode,
+      institutionId,
+      hintText = '',
+      accountMessageFormat,
+      accountNumberLength,
+    } = req.body;
+    let existingBank = await Bank.findOne({ bankName });
+    if (existingBank) {
+      throw new BadRequestError('Bank with this Name already exists');
     }
+    const bank = Bank.build({
+      bankName,
+      bankCode,
+      bankSwiftCode,
+      institutionId,
+      hintText,
+      accountMessageFormat,
+      accountNumberLength,
+    });
+    await bank.save();
+    res.status(201).send(bank);
   }
 );
 
 router.get(
   '/api/product/bank',
-  [body('name').optional().isString()],
+  [
+    body('bankName').optional().isString(),
+    body('bankCode').optional().isString(),
+    body('bankSwiftCode').optional().isString(),
+    body('institutionId').optional().isString(),
+  ],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { name } = req.body;
+      const { bankName, bankCode, bankSwiftCode, institutionId } = req.body;
       let queryObj: any = {};
-      name && (queryObj.name = name);
+      bankName && (queryObj.bankName = bankName);
+      bankCode && (queryObj.bankCode = bankCode);
+      bankSwiftCode && (queryObj.bankSwiftCode = bankSwiftCode);
+      institutionId && (queryObj.institutionId = institutionId);
       let banks = await Bank.find(queryObj);
       res.send(banks);
     } catch (error) {
@@ -56,16 +71,45 @@ router.get(
 
 router.put(
   '/api/product/bank',
-  [body('id').isString(), body('name').isString()],
+  [
+    body('id').isString(),
+    body('bankName').optional().isString(),
+    body('bankCode').optional().isString(),
+    body('bankSwiftCode').optional().isString(),
+    body('institutionId').optional().isString(),
+    body('hintText').optional().isString(),
+    body('accountMessageFormat').optional().isString(),
+    body('accountNumberLength').optional().isNumeric(),
+  ],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { id, name } = req.body;
+      const {
+        id,
+        bankName,
+        bankCode,
+        bankSwiftCode,
+        institutionId,
+        hintText,
+        accountMessageFormat,
+        accountNumberLength,
+      } = req.body;
       let updateObj: any = {};
-      name != null && (updateObj.name = name);
+      bankName != null && (updateObj.bankName = bankName);
+      bankCode != null && (updateObj.bankCode = bankCode);
+      bankSwiftCode != null && (updateObj.bankSwiftCode = bankSwiftCode);
+      institutionId != null && (updateObj.institutionId = institutionId);
+      hintText != null && (updateObj.hintText = hintText);
+      accountMessageFormat != null &&
+        (updateObj.accountMessageFormat = accountMessageFormat);
+      (accountNumberLength != null || accountNumberLength === 0) &&
+        (updateObj.accountNumberLength = accountNumberLength);
       const updatedBank = await Bank.findOneAndUpdate({ _id: id }, updateObj, {
         new: true,
       });
+      if (!updatedBank) {
+        throw new Error();
+      }
       res.send(updatedBank);
     } catch (error) {
       throw new BadRequestError('Unable to update Bank.');
@@ -80,7 +124,10 @@ router.delete(
   async (req: Request, res: Response) => {
     try {
       const { id } = req.body;
-      const deletedBank = await Bank.deleteOne({ _id: id });
+      const deletedBank = await Bank.findOneAndDelete({ _id: id });
+      if (!deletedBank) {
+        throw new Error();
+      }
       res.send(deletedBank);
     } catch (error) {
       throw new BadRequestError('Unable to delete Bank.');
@@ -89,12 +136,3 @@ router.delete(
 );
 
 export { router as bankRouter };
-
-// const { name } = req.body;
-// let existingBank = await Bank.findOne({ name });
-// if (existingBank) {
-//   throw new BadRequestError('Bank with this name is already present.');
-// }
-// const bank = Bank.build({ name });
-// await bank.save();
-// res.status(201).send(bank);

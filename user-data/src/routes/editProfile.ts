@@ -56,10 +56,13 @@ router.put(
         const uploadImage = await uploadFile((req as any).file);
         update.profilePicture = uploadImage.Location;
       }
-      const userUpdate = await User.updateOne(
+      const userUpdate = await User.findOneAndUpdate(
         { _id: userId },
         convertToDotNotation(update)
       );
+      if (!userUpdate) {
+        throw new Error();
+      }
       console.log(JSON.stringify(convertToDotNotation(update)));
       res.send(userUpdate);
     } catch (error) {

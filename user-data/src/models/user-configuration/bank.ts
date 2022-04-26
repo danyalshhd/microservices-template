@@ -3,7 +3,13 @@ import mongoose from 'mongoose';
 // An interface that describes the properties
 // that are requried to create a new User
 interface BankAttrs {
-  name: string;
+  bankName: string;
+  bankCode: string;
+  bankSwiftCode: string;
+  institutionId: string;
+  hintText?: string;
+  accountMessageFormat: string;
+  accountNumberLength: Number;
 }
 
 // An interface that describes the properties
@@ -15,17 +21,48 @@ interface BankModel extends mongoose.Model<BankDoc> {
 // An interface that describes the properties
 // that a User Document has
 interface BankDoc extends mongoose.Document {
-  name: string;
+  bankName: string;
+  bankCode: string;
+  bankSwiftCode: string;
+  institutionId: string;
+  hintText: string;
+  accountMessageFormat: string;
+  accountNumberLength: Number;
 }
 
 const BankSchema = new mongoose.Schema(
   {
-    name: {
+    bankName: {
       type: String,
+      required: true,
+    },
+    bankCode: {
+      type: String,
+      required: true,
+    },
+    bankSwiftCode: {
+      type: String,
+      required: true,
+    },
+    institutionId: {
+      type: String,
+      required: true,
+    },
+    hintText: {
+      type: String,
+      default: '',
+    },
+    accountMessageFormat: {
+      type: String,
+      required: true,
+    },
+    accountNumberLength: {
+      type: Number,
       required: true,
     },
   },
   {
+    timestamps: true,
     toJSON: {
       transform(doc, ret) {
         ret.id = ret._id;
