@@ -45,11 +45,11 @@ router.post(
           httpOnly: true,
           sameSite: "strict",
         }).json({
-          "message": "user signed in successfully "
+          "message": "User signed in successfully "
         });
       },
       onFailure: (err: any) => {
-        res.status(200).json({ "message": "User sign in failed " + err.message });
+        res.status(200).json({ "message": err.message });
       },
     });
     // }
