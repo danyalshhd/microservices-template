@@ -30,20 +30,18 @@ spec:
               value: ''
             - name: AWS_SECRET_ACCESS_KEY
               value: ''
-            - name: TWILIO_ACCOUNT_SID
-              value: ''
-            - name: TWILIO_AUTH_TOKEN
-              value: ''
+            - name: MONGO_URI
+              value: 'mongodb://host.docker.internal:27017/user-data'
             - name: ONFIDO_API_TOKEN
               value: 'api_sandbox_us.8KwrDixPGsf.Fdk4MLj49BDteYnyoKRZALcRDh6QYi6m'
-            # - name: NATS_CLIENT_ID
-            #   valueFrom:
-            #     fieldRef:
-            #       fieldPath: metadata.name
-            # - name: NATS_URL
-            #   value: 'http://nats-srv:4222'
-            # - name: NATS_CLUSTER_ID
-            #   value: digicel
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL
+              value: 'http://nats-srv:4222'
+            - name: NATS_CLUSTER_ID
+              value: digicel
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
