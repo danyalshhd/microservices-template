@@ -20,7 +20,6 @@ import { companyRouter } from './routes/user-configuration/company';
 import { countryRouter } from './routes/user-configuration/country';
 import { agentRouter } from './routes/user-configuration/agent';
 import { editProfileRouter } from './routes/editProfile';
-import { imageRouter } from './routes/upload-image';
 import { forgotpasswordRouter } from './routes/forgotPassowrd';
 import { errorHandler, NotFoundError } from '@dstransaction/common';
 import { resendOTPRouter } from './routes/resendOTP';
@@ -58,7 +57,6 @@ app.use(signinRouter);
 app.use(signoutRouter);
 app.use(signupRouter);
 app.use(onfidoRouter);
-app.use(imageRouter);
 app.use(editProfileRouter);
 app.use(amountRouter);
 app.use(categoryRouter);
@@ -112,7 +110,6 @@ const start = async () => {
     process.on('SIGTERM', () => natsWrapper.client.close());
 
     await mongoose.connect(process.env.MONGO_URI);
-    // mongodb://auth-mongo-srv:27017/auth
     console.log('Connected to MongoDb');
   } catch (err) {
     console.error(err);

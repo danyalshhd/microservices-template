@@ -25,13 +25,13 @@ spec:
             - name: AWS_BUCKET_NAME
               value: 'digicell-bucket'
             - name: AWS_BUCKET_REGION
-              value: ''
+              value: 'ap-southeast-1'
             - name: ACCESS_KEY_ID
               value: ''
             - name: AWS_SECRET_ACCESS_KEY
               value: ''
             - name: MONGO_URI
-              value: 'mongodb://host.docker.internal:27017/user-data'
+              value: 'mongodb://host.docker.internal:27017/digicel'
             - name: ONFIDO_API_TOKEN
               value: 'api_sandbox_us.8KwrDixPGsf.Fdk4MLj49BDteYnyoKRZALcRDh6QYi6m'
             - name: NATS_CLIENT_ID
