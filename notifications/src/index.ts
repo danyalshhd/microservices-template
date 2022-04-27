@@ -22,7 +22,15 @@ const start = async () => {
   }
 
   try {
+<<<<<<< HEAD
     await natsWrapper.connect(process.env.NATS_CLUSTER_ID, process.env.NATS_CLIENT_ID, process.env.NATS_URL);
+=======
+    await natsWrapper.connect(
+      process.env.NATS_CLUSTER_ID,
+      process.env.NATS_CLIENT_ID,
+      process.env.NATS_URL
+    );
+>>>>>>> 324282cfe58ecca331acee4d034656e641fd3275
 
     natsWrapper.client.on('close', () => {
       console.log('NATS connection closed');
@@ -31,7 +39,10 @@ const start = async () => {
     process.on('SIGINIT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 324282cfe58ecca331acee4d034656e641fd3275
     initializeFirebaseSDK(JSON.parse(process.env.FIREBASE_CERT!));
     new NotificationCreatedListener(natsWrapper.client).listen();
 
