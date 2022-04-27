@@ -7,9 +7,14 @@ import { validateRequest, BadRequestError } from '@dstransaction/common';
 
 
 router.post('/api/users/resendotp', [
-  // body('phone_number')
-  //   .isMobilePhone('any', { strictMode: true })
-  //   .withMessage('Please provide a valid phone number'),
+  body('phone_number')
+    .optional({nullable: true})
+    .isMobilePhone('any', { strictMode: true })
+    .withMessage('Please provide a valid phone number'),
+  body('email')
+    .optional({nullable: true})
+    .isEmail()
+    .withMessage('Email must be valid'),
 ], validateRequest,
   async (req: Request, res: Response) => {
     let { phone_number, email } = req.body;

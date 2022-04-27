@@ -4,10 +4,12 @@ import mongoose from "mongoose";
 // An interface that describes the properties
 // that are requried to create a new User
 interface UserAttrs {
+  _id: string;
   email: string;
   phone_number: string;
+  password: any;
   // deviceID: [string];
-  // loginAttempt: string;
+  lastLoginAttempt: string;
 }
 
 // An interface that describes the properties
@@ -21,12 +23,17 @@ interface UserModel extends mongoose.Model<UserDoc> {
 interface UserDoc extends mongoose.Document {
   email: string;
   phone_number: string;
+  password: any;
   // deviceID: [string];
-  // loginAttempt: string;
+  lastLoginAttempt: string;
 }
 
 const userSchema = new mongoose.Schema(
   {
+    _id: {
+      type: String,
+      required: true,
+    },
     email: {
       type: String,
       required: true,
@@ -35,14 +42,18 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    password: {
+      type: String,
+      required: true,
+    },
     // deviceID: {
     //   type: [String],
     //   required: true
     // },
-    // loginAttempt: {
-    //   type:String,
-    //   required: true
-    // },
+    lastLoginAttempt: {
+      type:String,
+      required: true
+    },
   },
   {
     toJSON: {

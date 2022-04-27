@@ -7,9 +7,14 @@ const { poolData } = require('../config/cognito-config');
 
 
 router.post("/api/users/changepassword", currentUser, [
-  // body('phone_number')
-  //   .isMobilePhone('any', { strictMode: true })
-  //   .withMessage('Please provide a valid phone number'),
+  body('phone_number')
+    .optional({nullable: true})
+    .isMobilePhone('any', { strictMode: true })
+    .withMessage('Please provide a valid phone number'),
+  body('email')
+    .optional({nullable: true})
+    .isEmail()
+    .withMessage('Email must be valid'),
   body('password')
     .trim()
     .notEmpty()
@@ -43,12 +48,11 @@ router.post("/api/users/changepassword", currentUser, [
             else {
               res.status(200).json({ "message": "Password changed" });
             }
-
           }
         });
       },
       onFailure: (err: any) => {
-        res.status(200).json({ "status": 0, "message": "Failed to authenticate" });
+        res.status(200).json({ "message": "Failed to authenticate" });
       },
     });
   });
