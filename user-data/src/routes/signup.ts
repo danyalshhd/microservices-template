@@ -21,7 +21,7 @@ router.post('/api/users/signup', [
     .withMessage('You must supply a password')
 ], validateRequest,
   async (req: Request, res: Response) => {
-    let { first_name, last_name, email, phone_number, password, mpin, secret_question, secret_answer, biometric } = req.body;
+    let { first_name, last_name, email,dob, phone_number, password, mpin, secret_question, secret_answer, biometric } = req.body;
     let attributeList: any = [];
     let userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({ Name: "email", Value: email }));
@@ -36,7 +36,7 @@ router.post('/api/users/signup', [
       {
         const date_n_time: any = new Date().toISOString();
         const user = User.build({
-          _id: data.userSub ,first_name, last_name, email, phone_number, password: await Password.toHash(password), mpin: await Password.toHash(mpin), secret_question, secret_answer, biometric
+          _id: data.userSub ,first_name, last_name,dob, email, phone_number, password: await Password.toHash(password), mpin: await Password.toHash(mpin), secret_question, secret_answer, biometric
         });
         await user.save();
         res.status(201).send(`OTP sent to ${data.codeDeliveryDetails.Destination}`)

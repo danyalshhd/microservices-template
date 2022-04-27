@@ -7,6 +7,7 @@ interface UserAttrs {
   _id: string;
   first_name: string;
   last_name: string;
+  dob: string;
   email: string;
   phone_number: string;
   password: string;
@@ -28,6 +29,7 @@ interface UserModel extends mongoose.Model<UserDoc> {
 interface UserDoc extends mongoose.Document {
   first_name: string;
   last_name: string;
+  dob: string;
   email: string;
   phone_number: string;
   password: string;
@@ -49,6 +51,10 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     last_name: {
+      type: String,
+      required: true,
+    },
+    dob: {
       type: String,
       required: true,
     },
