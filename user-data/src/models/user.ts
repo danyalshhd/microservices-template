@@ -5,11 +5,16 @@ import mongoose from "mongoose";
 // that are requried to create a new User
 interface UserAttrs {
   _id: string;
+  first_name: string;
+  last_name: string;
   email: string;
   phone_number: string;
-  password: any;
-  // deviceID: [string];
-  lastLoginAttempt: string;
+  password: string;
+  mpin: string;
+  biometric: boolean;
+  secret_question: string;
+  secret_answer: string;
+
 }
 
 // An interface that describes the properties
@@ -21,16 +26,29 @@ interface UserModel extends mongoose.Model<UserDoc> {
 // An interface that describes the properties
 // that a User Document has
 interface UserDoc extends mongoose.Document {
+  first_name: string;
+  last_name: string;
   email: string;
   phone_number: string;
-  password: any;
-  // deviceID: [string];
+  password: string;
+  mpin: string;
+  biometric: boolean;
+  secret_question: string;
+  secret_answer: string;
   lastLoginAttempt: string;
 }
 
 const userSchema = new mongoose.Schema(
   {
     _id: {
+      type: String,
+      required: true,
+    },
+    first_name: {
+      type: String,
+      required: true,
+    },
+    last_name: {
       type: String,
       required: true,
     },
@@ -46,13 +64,25 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    // deviceID: {
-    //   type: [String],
-    //   required: true
-    // },
+    mpin: {
+      type: String,
+      required: true
+    },
+    biometric: {
+      type: Boolean,
+      required: true 
+    },
+    secret_question: {
+      type: String,
+      required: true,
+    },
+    secret_answer: {
+      type: String,
+      required: true,
+    },
     lastLoginAttempt: {
       type:String,
-      required: true
+      required: false
     },
   },
   {

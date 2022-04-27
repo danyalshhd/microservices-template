@@ -77,3 +77,7 @@ router.post(
 export { router as signinRouter };
 
 
+// .cookie("refreshToken", result.getRefreshToken().getJwtToken(), {
+//   httpOnly: true,
+//   sameSite: "strict",
+// })
