@@ -32,62 +32,24 @@ router.post(
         const expiration = new Date();
         expiration.setSeconds(expiration.getSeconds() + EXPIRATION_WINDOW_SECONDS);
         //new request object
-        const request={
-            id:new mongoose.Types.ObjectId(),
+        const request=Requests.build({
+            userId:new mongoose.Types.ObjectId(req.body.userId),
             friendId :friend.id,
-            fullname:friend.id,
             amount:amount,
             expiresAt:expiration,
+            deleted:false,
             status:"created",
             createdAt:new Date(),
-        }
-        //checking if user has any request history
-        const user_requests=await Requests.findOne({userId:req.body.userId});
-        if(!user_requests){ //if no history then we create a new user history in collection
-            const user_requests=Requests.build({
-                userId:req.body.userId,
-                friends:[{
-                    friendId:friend.id,
-                    fullname:friend.id,
-                    lastRequestAmount:amount,
-                    createdAt:new Date(),
-                    deleted:false
-                }],
-                requests:[
-                    {
-                        ...request
-                    }
-                ]
-                
-            })
-            user_requests.save()
-        }
-        else{// else we push the request object in history
-            user_requests.requests.push(request);
-            const index=user_requests.friends.findIndex(e=>e.friendId===friend.id);
-            if(index!==-1){
-                user_requests.friends[index].createdAt=new Date();
-                user_requests.friends[index].lastRequestAmount=amount;
-                user_requests.friends[index].deleted=false;
-                
-            }
-            else{
-                user_requests.friends.push({
-                    friendId:friend.id,
-                    fullname:friend.id,
-                    lastRequestAmount:amount,
-                    createdAt:new Date(),
-                    deleted:false
-                })
-            }
-            user_requests.save()
-        }
+        });
+        await request.save();
         
         await new NotificationCreatedPublisher(natsWrapper.client).publish({
             id:friend._id,
             title:'Money Request',
             createdAt: new Date()
-        })
+        });
+        request.status="pending";
+        await request.save()
         res.status(200).json({message:"request sent",payload:request})
 })
 
