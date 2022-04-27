@@ -8,36 +8,36 @@ export class NotificationCreatedListener extends Listener<NotificationCreatedEve
 
   async onMessage(dat: NotificationCreatedEvent['data'], msg: Message) {
 
-    
-    try{
-      const title=dat.title;
-      const body="this is a sample notification";
-      const data={timeStamp:String(dat.createdAt)}
-      const userId=dat.id
-      const createdAt=dat.createdAt
-      const payload={
-        notification:{
-          title:title,
-          body:body,
+
+    try {
+      const title = dat.title;
+      const body = "this is a sample notification";
+      const data = { timeStamp: String(dat.createdAt) }
+      const userId = dat.id
+      const createdAt = dat.createdAt
+      const payload = {
+        notification: {
+          title: title,
+          body: body,
         },
-        data:{
+        data: {
           ...data
         },
-        token:userId
+        token: userId
       };
-      
-      const notification=Notification.build({
-                  title,
-                  body,
-                  createdAt,
-                  data,
-                  userId,
-                })
+
+      const notification = Notification.build({
+        title,
+        body,
+        createdAt,
+        data,
+        userId,
+      })
       await notification.save()
       // await firebase.messaging().send(payload);
-      console.log('sent: ',payload);
-    }catch(err){
-        console.log(err)
+      console.log('sent: ', payload);
+    } catch (err) {
+      console.log(err)
     }
 
     msg.ack();

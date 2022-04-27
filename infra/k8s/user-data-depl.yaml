@@ -22,6 +22,26 @@ spec:
               value: "us-east-1_VHjwDBnd3"
             - name: AWS_REGION
               value: "us-east-1"
+            # - name: AWS_BUCKET_NAME
+            #   value: "digicell-bucket"
+            # - name: AWS_BUCKET_REGION
+            #   value: ""
+            # - name: ACCESS_KEY_ID
+            #   value: ""
+            # - name: AWS_SECRET_ACCESS_KEY
+            #   value: ""
+            - name: MONGO_URI
+              value: "mongodb://host.docker.internal:27017/digicel"
+            - name: ONFIDO_API_TOKEN
+              value: "api_sandbox_us.8KwrDixPGsf.Fdk4MLj49BDteYnyoKRZALcRDh6QYi6m"
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL
+              value: "http://nats-srv:4222"
+            - name: NATS_CLUSTER_ID
+              value: digicel
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:

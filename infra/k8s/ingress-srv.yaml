@@ -17,6 +17,13 @@ spec:
                 name: user-data-srv
                 port:
                   number: 3000
+          - path: /api/product/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: user-data-srv
+                port:
+                  number: 3000
           - path: /api/transactions/?(.*)
             pathType: Prefix
             backend:
@@ -31,14 +38,21 @@ spec:
                 name: accounts-srv
                 port:
                   number: 3000
-          # - path: /?(.*)
-          #   pathType: Prefix
-          #   backend:
-          #     service:
-          #       name: client-srv
-          #       port:
-          #         number: 3000
           - path: /api/notifications/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: notifications-srv
+                port:
+                  number: 3000
+          - path: /api/onfido/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: user-data-srv
+                port:
+                  number: 3000
+          - path: /?(.*)
             pathType: Prefix
             backend:
               service:

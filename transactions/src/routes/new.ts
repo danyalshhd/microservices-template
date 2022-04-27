@@ -1,6 +1,10 @@
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
-import { requireAuth, TransactionStatus, validateRequest } from '@dstransaction/common';
+import {
+  requireAuth,
+  validateRequest,
+  TransactionStatus,
+} from '@dstransaction/common';
 import { Transaction } from '../models/transaction';
 import { TransactionCreatedPublisher } from '../events/publishers/transaction-created-publisher';
 import { NotificationCreatedPublisher } from '../events/publishers/notification-created-publisher';
@@ -31,7 +35,7 @@ router.post(
     await transaction.save();
 
     await new TransactionCreatedPublisher(natsWrapper.client).publish({
-      id: transaction.id,
+      id: transaction.id as string,
       title: transaction.title,
       price: +transaction.price,
       userId: transaction.userId,
