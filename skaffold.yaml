@@ -15,9 +15,8 @@ build:
         dockerfile: DockerFile
       sync:
         manual:
-          - src: 'src/**/*.ts'
+          - src: "src/**/*.ts"
             dest: .
-<<<<<<< HEAD
     # - image: digicel/client
     #   context: client
     #   docker:
@@ -26,58 +25,16 @@ build:
     #     manual:
     #       - src: "**/*.js"
     #         dest: .
-=======
-    - image: digicel/client
-      context: client
-      docker:
-        dockerfile: Dockerfile
-      sync:
-        manual:
-          - src: '**/*.js'
-            dest: .
->>>>>>> 324282cfe58ecca331acee4d034656e641fd3275
     - image: digicel/transactions
       context: transactions
       docker:
         dockerfile: DockerFile
       sync:
         manual:
-          - src: 'src/**/*.ts'
+          - src: "src/**/*.ts"
             dest: .
     - image: digicel/accounts
       context: accounts
-      docker:
-        dockerfile: DockerFile
-      sync:
-        manual:
-          - src: 'src/**/*.ts'
-            dest: .
-    # - image: digicel/product
-    #   context: product
-    #   docker:
-    #     dockerfile: DockerFile
-    #   sync:
-    #     manual:
-    #       - src: 'src/**/*.ts'
-    #         dest: .
-    # - image: digicel/accounts
-    #   context: accounts
-    #   docker:
-    #     dockerfile: DockerFile
-    #   sync:
-    #     manual:
-    #       - src: 'src/**/*.ts'
-    #         dest: .
-    - image: digicel/notifications
-      context: notifications
-      docker:
-        dockerfile: DockerFile
-      sync:
-        manual:
-          - src: 'src/**/*.ts'
-            dest: .
-    - image: digicel/expiration
-      context: expiration
       docker:
         dockerfile: DockerFile
       sync:
@@ -90,13 +47,21 @@ build:
         dockerfile: DockerFile
       sync:
         manual:
-          - src: 'src/**/*.ts'
+          - src: "src/**/*.ts"
             dest: .
-    - image: digicel/cash
-      context: cash
+    - image: digicel/expiration
+      context: expiration
       docker:
         dockerfile: DockerFile
       sync:
         manual:
-          - src: 'src/**/*.ts'
+          - src: "src/**/*.ts"
             dest: .
+    # - image: digicel/cash
+    #   context: cash
+    #   docker:
+    #     dockerfile: DockerFile
+    #   sync:
+    #     manual:
+    #       - src: "src/**/*.ts"
+    #         dest: .

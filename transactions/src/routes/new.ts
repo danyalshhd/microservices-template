@@ -1,14 +1,10 @@
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
-<<<<<<< HEAD
-import { requireAuth, TransactionStatus, validateRequest } from '@dstransaction/common';
-=======
 import {
   requireAuth,
   validateRequest,
   TransactionStatus,
 } from '@dstransaction/common';
->>>>>>> 324282cfe58ecca331acee4d034656e641fd3275
 import { Transaction } from '../models/transaction';
 import { TransactionCreatedPublisher } from '../events/publishers/transaction-created-publisher';
 import { NotificationCreatedPublisher } from '../events/publishers/notification-created-publisher';
