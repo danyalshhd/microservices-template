@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 // import { Password } from "../services/password";
 
 // An interface that describes the properties
@@ -20,10 +20,42 @@ interface UserModel extends mongoose.Model<UserDoc> {
 // that a User Document has
 interface UserDoc extends mongoose.Document {
   email: string;
+  password: string;
+  onfidoApplicantId: string;
+  onfidoCheckId: string;
+  upgradeToMax: string;
+  firstName: string;
+  lastName: string;
+  dob: string;
+  trnNumber: string;
+  streetAddress: Address;
+  sourceOfIncome: string;
+  profilePicture: string;
   phone_number: string;
   // deviceID: [string];
   // loginAttempt: string;
 }
+
+interface Address {
+  parish: string;
+  town: string;
+  fullAddress: string;
+}
+
+const addressSchema = new mongoose.Schema(
+  {
+    parish: {
+      type: String,
+    },
+    town: {
+      type: String,
+    },
+    fullAddress: {
+      type: String,
+    },
+  },
+  { _id: false }
+);
 
 const userSchema = new mongoose.Schema(
   {
@@ -34,6 +66,41 @@ const userSchema = new mongoose.Schema(
     phone_number: {
       type: String,
       required: true,
+    },
+    phoneNumber: {
+      type: String,
+    },
+    firstName: {
+      type: String,
+    },
+    lastName: {
+      type: String,
+    },
+    dob: {
+      type: String,
+    },
+    trnNumber: {
+      type: String,
+    },
+    upgradeToMax: {
+      type: String,
+      enum: ['disabled', 'in_progress', 'enabled'],
+      default: 'disabled',
+    },
+    streetAddress: {
+      type: addressSchema,
+    },
+    sourceOfIncome: {
+      type: String,
+    },
+    profilePicture: {
+      type: String,
+    },
+    onfidoApplicantId: {
+      type: String,
+    },
+    onfidoCheckId: {
+      type: String,
     },
     // deviceID: {
     //   type: [String],
@@ -68,6 +135,6 @@ userSchema.statics.build = (attrs: UserAttrs) => {
   return new User(attrs);
 };
 
-const User = mongoose.model<UserDoc, UserModel>("User", userSchema);
+const User = mongoose.model<UserDoc, UserModel>('User', userSchema);
 
 export { User };

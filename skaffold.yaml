@@ -15,7 +15,7 @@ build:
         dockerfile: DockerFile
       sync:
         manual:
-          - src: "src/**/*.ts"
+          - src: 'src/**/*.ts'
             dest: .
     - image: digicel/client
       context: client
@@ -23,7 +23,7 @@ build:
         dockerfile: Dockerfile
       sync:
         manual:
-          - src: "**/*.js"
+          - src: '**/*.js'
             dest: .
     - image: digicel/transactions
       context: transactions
@@ -31,7 +31,7 @@ build:
         dockerfile: DockerFile
       sync:
         manual:
-          - src: "src/**/*.ts"
+          - src: 'src/**/*.ts'
             dest: .
     - image: digicel/accounts
       context: accounts
@@ -39,5 +39,29 @@ build:
         dockerfile: DockerFile
       sync:
         manual:
-          - src: "src/**/*.ts"
+          - src: 'src/**/*.ts'
+            dest: .
+    # - image: digicel/product
+    #   context: product
+    #   docker:
+    #     dockerfile: DockerFile
+    #   sync:
+    #     manual:
+    #       - src: 'src/**/*.ts'
+    #         dest: .
+    # - image: digicel/accounts
+    #   context: accounts
+    #   docker:
+    #     dockerfile: DockerFile
+    #   sync:
+    #     manual:
+    #       - src: 'src/**/*.ts'
+    #         dest: .
+    - image: digicel/notifications
+      context: notifications
+      docker:
+        dockerfile: DockerFile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
             dest: .
