@@ -2,120 +2,131 @@ import mongoose, {Document, Types} from "mongoose";
 
 // An interface that describes the properties
 // that are requried to create a new Request
-export interface RequestAttrs {
-  userId: string;
-  friends:{
-    friendId:string;
-    fullname:string;
-    lastRequestAmount:number;
-    createdAt:Date;
-    deleted:boolean;
-  }[];
-  requests:{
-    id:Types.ObjectId;
-    friendId: string;
-    fullname: string;
-    amount: number;
-    status:string;
-    expiresAt:Date;
-    createdAt:Date;
-  }[]
-
+interface AgentAttrs{
+  userId: mongoose.Types.ObjectId;
+  createdAt:Date;
+  kind:"agentCashIn"|"agentCashOut"|"friend";
+  agentId:mongoose.Types.ObjectId;
+  cash_in_out:"in"|"out";
+  amount:number;
 }
+
+
+interface AgentCashOutAttrs extends AgentAttrs{
+  status:"created"|"pending"|"accepted"|"rejected";
+  expiresAt:Date;
+}
+interface FriendAttrs{
+  userId: mongoose.Types.ObjectId;
+  createdAt:Date;
+  kind:"agentCashIn"|"agentCashOut"|"friend";
+  friendId:mongoose.Types.ObjectId;
+  deleted:boolean;
+  amount: number;
+  status:"created"|"pending"|"accepted"|"rejected";
+  expiresAt:Date;
+}
+
+
+interface RequestAttrs {
+  userId: mongoose.Types.ObjectId;
+  createdAt:Date;
+  kind:"agentCashIn"|"agentCashOut"|"friend";
+}
+
 
 // An interface that describes the properties
 // that a Request Model has
 interface RequestModel extends mongoose.Model<RequestDoc> {
   build(attrs: RequestAttrs): RequestDoc;
 }
-
 // An interface that describes the properties
 // that a Request Document has
 interface RequestDoc extends mongoose.Document {
-  userId: string;
-  friends:{
-    friendId:string;
-    fullname:string;
-    lastRequestAmount:number;
-    createdAt:Date;
-    deleted:boolean;
-  }[];
-  requests:{
-    id:Types.ObjectId;
-    friendId: string;
-    fullname: string;
-    amount: number;
-    status:string;
-    expiresAt:Date;
-    createdAt:Date;
-  }[];
-
+  userId: mongoose.Types.ObjectId;
+  createdAt:Date;
+  kind:"agentCashIn"|"agentCashOut"|"friend";
 }
-const subrequestSchema=new mongoose.Schema({
-  id:{
-    type: mongoose.Schema.Types.ObjectId,
-    required:true,
-  },
 
-  friendId: {
-    type: String,
-  required: true,
-},
-fullname:{
-  type:String,
-  required:true,
-},
-amount:{
-    type:Number,
-    required:true,
-  },
-  status:{
-    type:String,
-  required:true,
-},
-expiresAt:{
-    type:Date,
-    required:true,
-  },
-  createdAt:{
-    type:Date,
-    required:true,
-  },
-
-},
-{
-  toJSON: {
-    transform(doc, ret) {
-    ret.id = ret._id;
-    delete ret.__v;
-  },
-},
-_id:false,
+const friendSchema= new mongoose.Schema({
+    friendId:{
+      type:String,
+      required:true,
+      index:true,
+    },
+    deleted:{
+      type:Boolean,
+      required:true
+    },
+    amount:{
+      type:Number,
+      required:true,
+    },
+    status:{
+      type:String,
+      required:true,
+    },
+    expiresAt:{
+      type:Date,
+      required:true,
+    },
 })
 
-const friendsSchema=new mongoose.Schema({
-  friendId:{type:String, required:true},
-  fullname:{type:String, required:true},
-  lastRequestAmount:{type:Number, required:true},
-  createdAt:{type:Date,required:true},
-  deleted:{type:Boolean,required:true}
-})
-const requestSchema = new mongoose.Schema(
-  {
-    userId: {
-      type: String,
+const AgentSchema= new mongoose.Schema({
+    agentId:{
+      type:mongoose.Schema.Types.ObjectId,
       required: true,
     },
-    friends:{
-      type:[friendsSchema],
-      required:false,
+    cash_in_out:{
+      type:String,
+      required:true
     },
-    requests:{
-      type: [subrequestSchema],
-      required: false
+    amount:{
+      type:Number,
+      required:true
     },
+})
+
+const AgentCashOutSchema= new mongoose.Schema({
+    agentId:{
+      type:mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
+    cash_in_out:{
+      type:String,
+      required:true
+    },
+    amount:{
+      type:Number,
+      required:true
+    },
+    status:{
+      type:String,
+      required:true,
+    },
+    expiresAt:{
+      type:Date,
+      required:true,
+    }
+})
+
+
+const requestSchema = new mongoose.Schema(
+  {
+
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      index: true,
+    },
+    createdAt:{
+      type: Date,
+      required:true
+    }
+
 },
     {
+      discriminatorKey:'kind',
       toJSON: {
         transform(doc, ret) {
           ret.id = ret._id;
@@ -134,5 +145,9 @@ requestSchema.statics.build = (attrs: RequestAttrs) => {
 };
 
 const Requests = mongoose.model<RequestDoc, RequestModel>("Request", requestSchema);
+const AgentCashIn=Requests.discriminator<AgentAttrs>("agentCashIn",AgentSchema);
+const AgentCashOut=Requests.discriminator<AgentCashOutAttrs>("agentCashOut",AgentCashOutSchema);
+const Friend=Requests.discriminator<FriendAttrs>("friend",friendSchema)
 
-export { Requests };
+
+export { Requests,AgentCashIn,AgentCashOut,Friend };

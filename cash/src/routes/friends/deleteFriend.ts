@@ -1,13 +1,21 @@
+import { BadRequestError, NotFoundError } from "@dstransaction/common";
 import  express, { Request, Response }  from "express";
-import { Requests } from "../../models/request";
+import mongoose from "mongoose";
+import { Friend,  } from "../../models/request";
 
 const router= express.Router();
 
 router.post('/api/cash/deleteFriend',async(req:Request,res:Response)=>{
-    const {userId, friendId}=req.body
-    const request =await Requests.findOneAndUpdate({userId:userId,"friends.friendId":friendId },
-                                                    {$set:{"friends.$.deleted":true}},
-                                                    {new:true,projection:{ friends:{'$elemMatch':{friendId:friendId}}}})
+    const {userId, friendId}=req.body;
+    if(!mongoose.isValidObjectId(friendId)){
+        throw new BadRequestError("Invalid Friend Id")
+    }
+    const request=await Friend.findOne({userId:userId, friendId:friendId},{},{sort:{createdAt:"desc"}});
+    if(!request){
+        throw new BadRequestError("No Transaction History With User");
+    }
+    request.deleted=true;
+    await request.save()
     res.status(200).json(request)
 
 })
