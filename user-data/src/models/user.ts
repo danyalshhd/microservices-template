@@ -4,10 +4,18 @@ import mongoose from 'mongoose';
 // An interface that describes the properties
 // that are requried to create a new User
 interface UserAttrs {
+  _id: string;
+  first_name: string;
+  last_name: string;
+  dob: string;
   email: string;
   phone_number: string;
-  // deviceID: [string];
-  // loginAttempt: string;
+  password: string;
+  mpin: string;
+  biometric: boolean;
+  secret_question: string;
+  secret_answer: string;
+
 }
 
 // An interface that describes the properties
@@ -19,21 +27,26 @@ interface UserModel extends mongoose.Model<UserDoc> {
 // An interface that describes the properties
 // that a User Document has
 interface UserDoc extends mongoose.Document {
+  first_name: string;
+  last_name: string;
+  dob: string;
   email: string;
-  password: string;
   onfidoApplicantId: string;
   onfidoCheckId: string;
   upgradeToMax: string;
   firstName: string;
   lastName: string;
-  dob: string;
   trnNumber: string;
   streetAddress: Address;
   sourceOfIncome: string;
   profilePicture: string;
   phone_number: string;
-  // deviceID: [string];
-  // loginAttempt: string;
+  password: string;
+  mpin: string;
+  biometric: boolean;
+  secret_question: string;
+  secret_answer: string;
+  lastLoginAttempt: string;
 }
 
 interface Address {
@@ -59,13 +72,24 @@ const addressSchema = new mongoose.Schema(
 
 const userSchema = new mongoose.Schema(
   {
-    email: {
+    _id: {
       type: String,
       required: true,
     },
-    phone_number: {
+    first_name: {
       type: String,
       required: true,
+    },
+    last_name: {
+      type: String,
+      required: true,
+    },
+    dob: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
     },
     phoneNumber: {
       type: String,
@@ -110,6 +134,30 @@ const userSchema = new mongoose.Schema(
     //   type:String,
     //   required: true
     // },
+    password: {
+      type: String,
+      required: true,
+    },
+    mpin: {
+      type: String,
+      required: true
+    },
+    biometric: {
+      type: Boolean,
+      required: true
+    },
+    secret_question: {
+      type: String,
+      required: true,
+    },
+    secret_answer: {
+      type: String,
+      required: true,
+    },
+    lastLoginAttempt: {
+      type: String,
+      required: false
+    },
   },
   {
     toJSON: {
