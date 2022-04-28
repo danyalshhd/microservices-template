@@ -8,7 +8,7 @@ import { validateRequest, BadRequestError, convertToUtc } from '@dstransaction/c
 import {Password} from '../services/password';
 
 router.post('/api/users/signup', [
-  body('phone_number')
+  body('phoneNumber')
     .optional({nullable: true})
     .isMobilePhone('any', { strictMode: true })
     .withMessage('Please provide a valid phone number'),
@@ -21,12 +21,12 @@ router.post('/api/users/signup', [
     .withMessage('You must supply a password')
 ], validateRequest,
   async (req: Request, res: Response) => {
-    let { first_name, last_name, email,dob, phone_number, password, mpin, secret_question, secret_answer, biometric } = req.body;
+    let { firstName, lastName, email,dob, phoneNumber, password, mpin, secretQuestion, secretAnswer, biometric } = req.body;
     let attributeList: any = [];
     let userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({ Name: "email", Value: email }));
-    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({ Name: "phone_number", Value: phone_number }));
-    userPool.signUp(email || phone_number, password, attributeList, null, async (err: any, data: any) => {
+    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({ Name: "phone_number", Value: phoneNumber }));
+    userPool.signUp(email || phoneNumber, password, attributeList, null, async (err: any, data: any) => {
       if (err) {
         console.log('Error: ', err);
         res.send(err);
@@ -36,7 +36,7 @@ router.post('/api/users/signup', [
       {
         const date_n_time: any = new Date().toISOString();
         const user = User.build({
-          _id: data.userSub ,first_name, last_name,dob, email, phone_number, password: await Password.toHash(password), mpin: await Password.toHash(mpin), secret_question, secret_answer, biometric
+          _id: data.userSub ,firstName, lastName,dob, email, phoneNumber, password: await Password.toHash(password), mpin: await Password.toHash(mpin), secretQuestion, secretAnswer, biometric
         });
         await user.save();
         res.status(201).send(`OTP sent to ${data.codeDeliveryDetails.Destination}`)
@@ -47,10 +47,10 @@ router.post('/api/users/signup', [
 
 router.post("/api/users/confirmation", async (req: Request, res: Response) => {
   try {
-    let { phone_number, email, code } = req.body;
+    let { phoneNumber, email, code } = req.body;
     const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     const userData = {
-      Username: phone_number || email,
+      Username: phoneNumber || email,
       Pool: userPool,
     };
     let cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);

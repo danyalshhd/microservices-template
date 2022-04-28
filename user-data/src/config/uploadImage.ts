@@ -45,17 +45,4 @@ function uploadFile(file: any) {
   return s3.upload(uploadParams).promise();
 }
 
-router.post(
-  '/api/users/imageUpload',
-  upload.single('image'),
-  async (req: any, res) => {
-    try {
-      let uploadImage = await uploadFile(req.file);
-      res.send(uploadImage);
-    } catch (error) {
-      res.send(error);
-    }
-  }
-);
-
-export { uploadFile, router as imageRouter };
+export { uploadFile};

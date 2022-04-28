@@ -9,7 +9,7 @@ import { User } from '../models/user';
 router.post(
   '/api/users/signin',
   [
-    body('phone_number')
+    body('phoneNumber')
     .optional({nullable: true})
     .isMobilePhone('any', { strictMode: true })
     .withMessage('Please provide a valid phone number'),
@@ -29,9 +29,9 @@ router.post(
       res.send(`User Already Logged In.`)
       return;
     }
-    let { phone_number, email, password } = req.body;
+    let { phoneNumber, email, password } = req.body;
     let authenticationData = {
-      Username: phone_number || email,
+      Username: phoneNumber || email,
       Password: password,
     };
     let authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(
@@ -39,7 +39,7 @@ router.post(
     );
     let userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     let userData = {
-      Username: phone_number || email,
+      Username: phoneNumber || email,
       Pool: userPool,
     };
     let cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);

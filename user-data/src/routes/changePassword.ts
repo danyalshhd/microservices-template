@@ -7,7 +7,7 @@ const { poolData } = require('../config/cognito-config');
 
 
 router.post("/api/users/changepassword", currentUser, [
-  body('phone_number')
+  body('phoneNumber')
     .optional({nullable: true})
     .isMobilePhone('any', { strictMode: true })
     .withMessage('Please provide a valid phone number'),
@@ -25,14 +25,14 @@ router.post("/api/users/changepassword", currentUser, [
     .withMessage('You must supply a new password')
 ], validateRequest,
   async (req: any, res: any) => {
-    let { phone_number, email, password, newPassword } = req.body;
+    let { phoneNumber, email, password, newPassword } = req.body;
     let authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails({
-      Username: phone_number || email,
+      Username: phoneNumber || email,
       Password: password,
     });
     let userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     let userData = {
-      Username: phone_number || email,
+      Username: phoneNumber || email,
       Pool: userPool
     };
     let cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);

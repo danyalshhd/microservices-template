@@ -7,7 +7,7 @@ import { validateRequest, BadRequestError } from '@dstransaction/common';
 
 
 router.post('/api/users/resendotp', [
-  body('phone_number')
+  body('phoneNumber')
     .optional({nullable: true})
     .isMobilePhone('any', { strictMode: true })
     .withMessage('Please provide a valid phone number'),
@@ -17,11 +17,11 @@ router.post('/api/users/resendotp', [
     .withMessage('Email must be valid'),
 ], validateRequest,
   async (req: Request, res: Response) => {
-    let { phone_number, email } = req.body;
+    let { phoneNumber, email } = req.body;
     let cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider();
     let params = {
       ClientId: poolData['ClientId'],
-      Username: phone_number || email
+      Username: phoneNumber || email
     };
     cognitoIdentityServiceProvider.resendConfirmationCode(params, (err: any, result: any) => {
       if (err) {

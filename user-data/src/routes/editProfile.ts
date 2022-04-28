@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import path from 'path';
 import { Password } from '../services/password';
 import { User } from '../models/user';
-import { uploadFile } from './upload-image';
+import { uploadFile } from '../config/uploadImage';
 import { validateRequest, BadRequestError } from '@dstransaction/common';
 const multer = require('multer');
 
@@ -58,7 +58,8 @@ router.put(
       }
       const userUpdate = await User.findOneAndUpdate(
         { _id: userId },
-        convertToDotNotation(update)
+        convertToDotNotation(update) , 
+        { new: true }
       );
       if (!userUpdate) {
         throw new Error();

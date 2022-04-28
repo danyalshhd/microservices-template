@@ -7,7 +7,7 @@ const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 import { validateRequest, BadRequestError, currentUser } from '@dstransaction/common';
 
 router.post("/api/users/forgotpassword", [
-  body('phone_number')
+  body('phoneNumber')
     .optional({nullable: true})
     .isMobilePhone('any', { strictMode: true })
     .withMessage('Please provide a valid phone number'),
@@ -17,9 +17,9 @@ router.post("/api/users/forgotpassword", [
     .withMessage('Email must be valid'),
 ], validateRequest,
     async (req: Request, res: Response) => {
-        let { phone_number, email } = req.body;
+        let { phoneNumber, email } = req.body;
         const userData = {
-            Username: phone_number || email,
+            Username: phoneNumber || email,
             Pool: userPool,
         };
         const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
@@ -36,7 +36,7 @@ router.post("/api/users/forgotpassword", [
     })
 
 router.post("/api/users/newpassword", currentUser, [
-    // body('phone_number')
+    // body('phoneNumber')
     //     .isMobilePhone('any', { strictMode: true })
     //     .withMessage('Please provide a valid phone number'),
     body('newPassword')
@@ -45,9 +45,9 @@ router.post("/api/users/newpassword", currentUser, [
         .withMessage('You must supply a password')
 ], validateRequest,
     async (req: Request, res: Response) => {
-        let { phone_number, email, code, newPassword } = req.body;
+        let { phoneNumber, email, code, newPassword } = req.body;
         const userData = {
-            Username: phone_number || email,
+            Username: phoneNumber || email,
             Pool: userPool,
         };
         const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);

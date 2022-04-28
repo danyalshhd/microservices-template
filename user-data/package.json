@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@dstransaction/common": "^1.0.24",
+    "@dstransaction/common": "^1.0.25",
     "@onfido/api": "^2.2.0",
     "@types/cookie-parser": "^1.4.2",
     "@types/cookie-session": "^2.0.44",
