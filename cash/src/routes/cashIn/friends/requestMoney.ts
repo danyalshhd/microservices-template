@@ -1,10 +1,10 @@
 import express, {Request,Response} from "express";
-import { User } from "../../models/user";
+import { User } from "../../../models/user";
 import { body } from 'express-validator';
 import {  BadRequestError } from '@dstransaction/common';
-import { NotificationCreatedPublisher } from "../../events/publishers/notification-created-publisher";
-import { natsWrapper } from "../../nats-wrapper";
-import { Requests } from "../../models/request";
+import { NotificationCreatedPublisher } from "../../../events/publishers/notification-created-publisher";
+import { natsWrapper } from "../../../nats-wrapper";
+import { Friend } from "../../../models/request";
 import mongoose from "mongoose";
 
 const router=express.Router()
@@ -32,14 +32,14 @@ router.post(
         const expiration = new Date();
         expiration.setSeconds(expiration.getSeconds() + EXPIRATION_WINDOW_SECONDS);
         //new request object
-        const request=Requests.build({
+        const request=await Friend.create({
             userId:new mongoose.Types.ObjectId(req.body.userId),
+            createdAt:new Date(),
             friendId :friend.id,
             amount:amount,
             expiresAt:expiration,
             deleted:false,
             status:"created",
-            createdAt:new Date(),
         });
         await request.save();
         

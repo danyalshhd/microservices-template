@@ -1,8 +1,8 @@
 import express, {Request,Response} from "express";
 import {  BadRequestError, NotAuthorizedError, NotFoundError } from "@dstransaction/common";
-import { NotificationCreatedPublisher } from "../../events/publishers/notification-created-publisher";
-import { natsWrapper } from "../../nats-wrapper";
-import { Requests } from "../../models/request";
+import { NotificationCreatedPublisher } from "../../../events/publishers/notification-created-publisher";
+import { natsWrapper } from "../../../nats-wrapper";
+import { Friend } from "../../../models/request";
 import mongoose from "mongoose";
 
 const router=express.Router()
@@ -18,7 +18,7 @@ router.post('/api/cash/cashIn/requestResponse',async(req:Request,res:Response)=>
             throw new BadRequestError("You did not enter a valid Request Id")
         }
         //validating request existence
-        const request=await Requests.findById(requestId)
+        const request=await Friend.findById(requestId)
         if(!request){
             throw new BadRequestError("Request does not exist")
         }
