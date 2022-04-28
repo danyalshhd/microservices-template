@@ -3,15 +3,20 @@ import { body } from 'express-validator';
 const router = express.Router();
 const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
 const { poolData } = require('../config/cognito-config');
-import { validateRequest, BadRequestError } from '@dstransaction/common';
+import { validateRequest, BadRequestError, convertToUtc } from '@dstransaction/common';
 import { User } from '../models/user';
 
 router.post(
   '/api/users/signin',
   [
-    // body('phone_number')
-    //   .isMobilePhone('any', { strictMode: true })
-    //   .withMessage('Please provide a valid phone number'),
+    body('phone_number')
+    .optional({nullable: true})
+    .isMobilePhone('any', { strictMode: true })
+    .withMessage('Please provide a valid phone number'),
+    body('email')
+    .optional({nullable: true})
+    .isEmail()
+    .withMessage('Email must be valid'),
     body('password')
       .trim()
       .notEmpty()
@@ -19,6 +24,11 @@ router.post(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
+    if (req.cookies['idToken'])
+    {
+      res.send(`User Already Logged In.`)
+      return;
+    }
     let { phone_number, email, password } = req.body;
     let authenticationData = {
       Username: phone_number || email,
@@ -33,14 +43,23 @@ router.post(
       Pool: userPool,
     };
     let cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-    // const existingDevice = await User.findOne({ phone_number: phone_number,deviceID: 'u1' });
-    // if (!existingDevice) {
-    //   res.send('You are already signed in to another device.');
-    // }
-    // else
-    // {
     cognitoUser.authenticateUser(authenticationDetails, {
       onSuccess: (result: any) => {
+        try {
+          const date_n_time: any = new Date().toISOString();
+          let timeinUTC = convertToUtc(date_n_time);
+          User.updateOne({ _id: result.idToken.payload.sub },
+            { $set: { lastLoginAttempt: timeinUTC } }, function (err: any, docs: any) {
+            if (err){
+                console.log("Error : ", err);
+            }
+            else{
+                console.log("Result : ", docs);
+            }
+        });
+       } catch (e) {
+          console.log(e);
+       }
         res.status(200).cookie("idToken", result.getIdToken().getJwtToken(), {
           httpOnly: true,
           sameSite: "strict",
@@ -52,10 +71,13 @@ router.post(
         res.status(200).json({ "message": err.message });
       },
     });
-    // }
   });
 
 
 export { router as signinRouter };
 
 
+// .cookie("refreshToken", result.getRefreshToken().getJwtToken(), {
+//   httpOnly: true,
+//   sameSite: "strict",
+// })

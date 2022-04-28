@@ -11,10 +11,9 @@ accounts/package-lock.json
 
 expiration/node_modules
 expiration/package-lock.json
+
 notifications/node_modules
 notifications/package-lock.json
-
-
 
 cash/node_modules
 cash/package-lock.json
