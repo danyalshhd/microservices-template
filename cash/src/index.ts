@@ -1,8 +1,6 @@
 import mongoose from 'mongoose';
-import { app } from './app'; import { randomBytes } from 'crypto';
+import { app } from './app';import { randomBytes } from 'crypto';
 import { natsWrapper } from './nats-wrapper';
-import { TransactionCreatedListener } from './events/listeners/transaction-created-listener';
-import { TransactionUpdatedListener } from './events/listeners/transaction-updated-listener';
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
@@ -32,14 +30,13 @@ const start = async () => {
     process.on('SIGINIT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());
 
-    new TransactionCreatedListener(natsWrapper.client).listen();
-    new TransactionUpdatedListener(natsWrapper.client).listen();
 
     await mongoose.connect(process.env.MONGO_URI);
     console.log('Connected to MongoDb');
   } catch (err) {
     console.error(err);
   }
+
   app.listen(3000, () => {
     console.log('Listening on port 3000!');
   });

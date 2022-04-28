@@ -47,7 +47,7 @@ const start = async () => {
   }
 
   try {
-    await mongoose.connect('mongodb://host.docker.internal:27017');
+    await mongoose.connect('mongodb://host.docker.internal:27017/digicel');
     // mongodb://auth-mongo-srv:27017/auth
     console.log('Connected to MongoDb');
   } catch (err) {

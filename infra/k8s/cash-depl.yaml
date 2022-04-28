@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: transactions-depl
+  name: cash-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: transactions
+      app: cash
   template:
     metadata:
       labels:
-        app: transactions
+        app: cash
     spec:
       containers:
-        - name: transactions
-          image: digicel/transactions:latest
+        - name: cash
+          image: digicel/cash:latest
           env:
             - name: NATS_CLIENT_ID
               valueFrom:
@@ -35,12 +35,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: transactions-srv
+  name: cash-srv
 spec:
   selector:
-    app: transactions
+    app: cash
   ports:
-    - name: transactions
+    - name: cash
       protocol: TCP
       port: 3000
       targetPort: 3000
