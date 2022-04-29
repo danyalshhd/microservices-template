@@ -51,17 +51,19 @@ router.get(
 
 router.delete(
   '/api/product/amount',
-  [body('amounts').isArray()],
+  [body('amount').isNumeric()],
   async (req: Request, res: Response) => {
     try {
-      const { amounts } = req.body;
-      const deleteAmounts = await Amount.deleteMany({
-        _id: { $in: amounts },
+      const { amount } = req.body;
+      const deleteAmount = await Amount.findOneAndDelete({
+        amount,
       });
-      res.send(deleteAmounts);
+      if (!deleteAmount) {
+        throw new Error();
+      }
+      res.send(deleteAmount);
     } catch (error) {
-      console.log(error);
-      throw new Error('Unable to delete amounts');
+      throw new BadRequestError('Unable to delete amount');
     }
   }
 );
