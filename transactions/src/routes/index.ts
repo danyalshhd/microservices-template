@@ -1,12 +1,7 @@
-import express, { Request, Response } from 'express';
-import { Transaction } from '../models/transaction';
-
+import express from 'express';
+import transactionsController from '../controllers/Transactions'
 const router = express.Router();
 
-router.get('/api/transactions', async (req: Request, res: Response) => {
-  const transactions = await Transaction.find({});
-
-  res.send(transactions);
-});
+router.post('/api/transactions', transactionsController);
 
 export { router as indexTransactionRouter };
