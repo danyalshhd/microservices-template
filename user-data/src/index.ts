@@ -19,6 +19,7 @@ import { secretQuestionRouter } from './routes/user-configuration/secretQuestion
 import { companyRouter } from './routes/user-configuration/company';
 import { countryRouter } from './routes/user-configuration/country';
 import { agentRouter } from './routes/user-configuration/agent';
+import { portalUserRouter } from './routes/user-configuration/portalUser';
 import { editProfileRouter } from './routes/editProfile';
 import { forgotpasswordRouter } from './routes/forgotPassowrd';
 import { errorHandler, NotFoundError } from '@dstransaction/common';
@@ -62,6 +63,7 @@ app.use(companyRouter);
 app.use(secretQuestionRouter);
 app.use(countryRouter);
 app.use(agentRouter);
+app.use(portalUserRouter);
 app.use(forgotpasswordRouter);
 app.use(resendOTPRouter);
 app.use(changePasswordRouter);
