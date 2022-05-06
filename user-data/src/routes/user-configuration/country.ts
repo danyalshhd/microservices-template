@@ -4,6 +4,31 @@ import { body } from 'express-validator';
 import { Country } from '../../models/user-configuration/country';
 const router = express.Router();
 
+router.post(
+  '/api/product/country',
+  validateRequest,
+  async (req: Request, res: Response) => {
+    const { countryName, countryCode, phonePrefix, visible = true } = req.body;
+    let existingCountry = await Country.findOne({
+      countryName,
+      countryCode,
+    });
+    if (existingCountry) {
+      throw new BadRequestError(
+        'Country with this name and code already exists.'
+      );
+    }
+    const country = Country.build({
+      countryName,
+      countryCode,
+      phonePrefix,
+      visible,
+    });
+    await country.save();
+    res.status(201).send(country);
+  }
+);
+
 router.get(
   '/api/product/country',
   validateRequest,
@@ -41,16 +66,34 @@ router.put(
       countryCode && (updateObj.countryCode = countryCode);
       phonePrefix && (updateObj.phonePrefix = phonePrefix);
       visible != null && (updateObj.visible = visible);
-      const updatedCompany = await Country.findOneAndUpdate(
+      const updatedCountry = await Country.findOneAndUpdate(
         { _id: id },
         updateObj,
         {
           new: true,
         }
       );
-      res.send(updatedCompany);
+      res.send(updatedCountry);
     } catch (error) {
-      throw new BadRequestError('Unable to update Company.');
+      throw new BadRequestError('Unable to update Country.');
+    }
+  }
+);
+
+router.delete(
+  '/api/product/country',
+  body('id').isString(),
+  validateRequest,
+  async (req: Request, res: Response) => {
+    try {
+      const { id } = req.body;
+      const deletedCountry = await Country.findOneAndDelete({ _id: id });
+      if (!deletedCountry) {
+        throw new Error();
+      }
+      res.send(deletedCountry);
+    } catch (error) {
+      throw new BadRequestError('Unable to delete Country.');
     }
   }
 );
