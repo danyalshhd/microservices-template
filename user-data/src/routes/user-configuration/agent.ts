@@ -9,7 +9,9 @@ router.post(
   [
     body('agentId').isString(),
     body('agentName').isString(),
-    body('location').isString(),
+    body('parish').isString(),
+    body('town').isString(),
+    body('fullAddress').optional().isString(),
     body('bankId').isString(),
     body('rating').isNumeric(),
     body('latitude').isNumeric(),
@@ -20,13 +22,16 @@ router.post(
     const {
       agentId,
       agentName,
-      location,
+      parish,
+      town,
+      fullAddress,
       bankId,
       rating,
       latitude,
       longitude,
     } = req.body;
     let coordinates: any = { latitude, longitude };
+    let address: any = { parish, town, fullAddress };
     let existingAgent = await Agent.findOne({ agentId });
     if (existingAgent) {
       throw new BadRequestError('Agent with this ID already exists');
@@ -34,7 +39,7 @@ router.post(
     const agent = Agent.build({
       agentId,
       agentName,
-      location,
+      address,
       bankId,
       rating,
       coordinates,
@@ -55,13 +60,17 @@ router.get(
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { agentName, agentId, bankId, rating } = req.body;
+      const { agentName, agentId, bankId, rating, parish, town } = req.body;
       let queryObj: any = {};
+      let address: any = {};
       agentName && (queryObj.agentName = agentName);
       agentId && (queryObj.agentId = agentId);
       bankId && (queryObj.bankId = bankId);
       rating && (queryObj.rating = rating);
-      let agents = await Agent.find(queryObj);
+      parish && (address.parish = parish);
+      town && (address.town = town);
+      Object.keys(address).length > 0 && (queryObj.address = address);
+      let agents = await Agent.find(convertToDotNotation(queryObj));
       res.send(agents);
     } catch (error) {
       throw new BadRequestError('Unable to retrieve Agents.');
@@ -75,7 +84,9 @@ router.put(
     body('id').isString(),
     body('agentId').optional().isString(),
     body('agentName').optional().isString(),
-    body('location').optional().isString(),
+    body('parish').optional().isString(),
+    body('town').optional().isString(),
+    body('fullAddress').optional().isString(),
     body('bankId').optional().isString(),
     body('rating').optional().isNumeric(),
     body('latitude').optional().isNumeric(),
@@ -88,24 +99,29 @@ router.put(
         id,
         agentId,
         agentName,
-        location,
+        parish,
+        town,
+        fullAddress,
         bankId,
         rating,
         latitude,
         longitude,
       } = req.body;
       let coordinates: any = {};
+      let address: any = {};
+      let updateObj: any = {};
       (latitude != null || latitude === 0) && (coordinates.latitude = latitude);
       (longitude != null || longitude === 0) &&
         (coordinates.longitude = longitude);
-      console.log(coordinates);
-      let updateObj: any = {};
+      (rating != null || rating === 0) && (updateObj.rating = rating);
       let coordinatesKeys: any = [];
       agentId != null && (updateObj.agentId = agentId);
       agentName != null && (updateObj.agentName = agentName);
       bankId != null && (updateObj.bankId = bankId);
-      (rating != null || rating === 0) && (updateObj.rating = rating);
-      location && (updateObj.location = location);
+      parish != null && (address.parish = parish);
+      town != null && (address.town = town);
+      fullAddress != null && (address.fullAddress = fullAddress);
+      Object.keys(address).length > 0 && (updateObj.address = address);
       coordinates && (coordinatesKeys = Object.keys(coordinates));
       coordinatesKeys.length > 0 && (updateObj.coordinates = {});
       if (coordinatesKeys.length > 0) {
@@ -126,6 +142,7 @@ router.put(
       }
       res.send(updatedAgent);
     } catch (error) {
+      console.log(error);
       throw new BadRequestError('Unable to update Agent.');
     }
   }

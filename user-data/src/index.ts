@@ -1,3 +1,4 @@
+// require('dotenv').config();
 import express from 'express';
 import 'express-async-errors';
 import { json } from 'body-parser';
@@ -75,9 +76,6 @@ app.all('*', async (req, res) => {
 app.use(errorHandler);
 
 const start = async () => {
-  if (!process.env.JWT_KEY) {
-    throw new Error('JWT_KEY must be defined');
-  }
   if (!process.env.NATS_CLIENT_ID) {
     throw new Error('NATS_CLIENT_ID must be defined');
   }

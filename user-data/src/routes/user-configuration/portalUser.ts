@@ -6,18 +6,10 @@ const router = express.Router();
 
 router.post(
   '/api/product/user',
-  [
-    body('name').isString(),
-    body('email').isString(),
-    body('role').isString(),
-  ],
+  [body('name').isString(), body('email').isString(), body('role').isString()],
   validateRequest,
   async (req: Request, res: Response) => {
-    const {
-      name,
-      email,
-      role,
-    } = req.body;
+    const { name, email, role } = req.body;
     let existingUser = await PortalUser.findOne({ email });
     if (existingUser) {
       throw new BadRequestError('User with this email already exists');
@@ -66,19 +58,18 @@ router.put(
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const {
-        id,
-        name,
-        email,
-        role,
-      } = req.body;
+      const { id, name, email, role } = req.body;
       let updateObj: any = {};
       name != null && (updateObj.name = name);
       email != null && (updateObj.email = email);
       role != null && (updateObj.role = role);
-      const updatedUser = await PortalUser.findOneAndUpdate({ _id: id }, updateObj, {
-        new: true,
-      });
+      const updatedUser = await PortalUser.findOneAndUpdate(
+        { _id: id },
+        updateObj,
+        {
+          new: true,
+        }
+      );
       if (!updatedUser) {
         throw new Error();
       }
