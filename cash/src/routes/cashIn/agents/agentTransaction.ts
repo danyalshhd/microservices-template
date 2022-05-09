@@ -1,11 +1,11 @@
-import express, {Request,Response} from "express";
+import express, {Request,Response} from 'express';
 import { validateRequest, BadRequestError, NotFoundError } from '@dstransaction/common';
-import { NotificationCreatedPublisher } from "../../../events/publishers/notification-created-publisher";
-import { natsWrapper } from "../../../nats-wrapper";
-import { body } from "express-validator";
-import { User } from "../../../models/user";
-import { AgentCashIn } from "../../../models/request";
-import mongoose from "mongoose";
+import { NotificationCreatedPublisher } from '../../../events/publishers/notification-created-publisher';
+import { natsWrapper } from '../../../nats-wrapper';
+import { body } from 'express-validator';
+import { User } from '../../../models/user';
+import { AgentCashIn } from '../../../models/request';
+import mongoose from 'mongoose';
 
 
 const router=express.Router();
@@ -19,10 +19,10 @@ router.post(
     const {email,amount, agentId}=req.body;
     const user=await User.findOne({email});
     if(!user){
-        throw new BadRequestError("user does not exist")
+        throw new BadRequestError('user does not exist')
     }
     if(!mongoose.isValidObjectId(agentId)){
-        throw new BadRequestError("You did not enter a valid Agent Id")
+        throw new BadRequestError('You did not enter a valid Agent Id')
     }
     
     try{
@@ -36,14 +36,15 @@ router.post(
             userId:(user._id),
             createdAt:new Date(),
             agentId:new mongoose.Types.ObjectId(agentId),
-            cash_in_out:"in",
+            cash_in_out:'in',
             amount:amount,
         })
         await request.save()
-        res.status(200).json({message: `notification sent to user ${user.email}`, payload:request})
-    }catch(err){
-        console.log(err)
-        throw new BadRequestError('internal server error')
+        res.status(200).json({results:{
+            message:'OK'
+        }})
+    }catch(err:any){
+        throw new Error(err.message)
     }
 })
 

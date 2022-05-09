@@ -1,6 +1,5 @@
-import express, {Request,Response} from "express";
-import { BadRequestError } from '@dstransaction/common';
-import { AgentCashIn } from "../../../models/request";
+import express, {Request,Response} from 'express';
+import { AgentCashIn } from '../../../models/request';
 
 
 const router=express.Router();
@@ -12,10 +11,10 @@ router.get(
     {
     try{
         const requests=await AgentCashIn.find({userId:req.body.userId})
-        res.status(200).json(requests)
+        res.status(200).json({results:{message:'OK',dataItems:requests}})
     }catch(err){
         console.log(err)
-        throw new BadRequestError("internal server error")
+        throw new Error('internal server error')
     }
 })
 

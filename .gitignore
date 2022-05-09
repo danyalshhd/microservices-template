@@ -26,3 +26,4 @@ notifications/package-lock.json
 
 cash/node_modules
 cash/package-lock.json
+cash/.env

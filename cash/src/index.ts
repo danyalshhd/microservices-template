@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+dotenv.config()
 import { app } from './app';import { randomBytes } from 'crypto';
 import { natsWrapper } from './nats-wrapper';
 
@@ -20,7 +22,6 @@ const start = async () => {
   }
 
   try {
-    console.log(process.env.NATS_CLUSTER_ID);
     await natsWrapper.connect(process.env.NATS_CLUSTER_ID.trim(), randomBytes(4).toString('hex'), process.env.NATS_URL);
 
     natsWrapper.client.on('close', () => {

@@ -6,7 +6,7 @@ import { errorHandler, NotFoundError } from '@dstransaction/common';
 import { requestResponseRouter } from './routes/cashIn/friends/requestResponse';
 import { cashOutAgentRequestRouter } from './routes/cashOut/agentRequest';
 import { cashOutAgentResponse } from './routes/cashOut/agentResponse';
-import { showAgentsRouter } from './routes/showAgents';
+import { showAgentsRouter } from './routes/agents/showAgents';
 import { availableFriendsRouter } from './routes/friends/availableFriends';
 import { deleteFriendRouter } from './routes/friends/deleteFriend';
 import { cashInAgentTransactionRouter } from './routes/cashIn/agents/agentTransaction';
@@ -16,6 +16,10 @@ import { pendingRequestsRouter } from './routes/cashIn/friends/pendingRequests';
 import { sentRequestsRouter } from './routes/cashIn/friends/allSentRequests';
 import { receivedRequestsRouter } from './routes/cashIn/friends/allReceivedRequests';
 import { getCashInAgentRequestRouter } from './routes/cashOut/getAgentRequests';
+import { storeAgentsRouter } from './routes/agents/insertAgent';
+import { showtownsRouter } from './routes/agents/town';
+import { showparishsRouter } from './routes/agents/parish';
+import { agentDetailsRouter } from './routes/agents/agentDetails';
 
 const app = express();
 app.set('trust proxy', true);
@@ -40,6 +44,10 @@ app.use(sentRequestsRouter)
 app.use(receivedRequestsRouter)
 app.use(getcashInAgentTransactionRouter)
 app.use(getCashInAgentRequestRouter);
+app.use(storeAgentsRouter);
+app.use(showtownsRouter);
+app.use(showparishsRouter);
+app.use(agentDetailsRouter);
 app.all('*', async (req, res) => {
   throw new NotFoundError();
 });

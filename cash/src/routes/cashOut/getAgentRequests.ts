@@ -1,6 +1,5 @@
-import express, {Request,Response} from "express";
-import { BadRequestError } from '@dstransaction/common';
-import { AgentCashOut } from "../../models/request";
+import express, {Request,Response} from 'express';
+import { AgentCashOut } from '../../models/request';
 
 
 const router=express.Router();
@@ -8,11 +7,10 @@ const router=express.Router();
 router.get('/api/cash/cashOut/getCashInAgentRequest',
 async(req:Request,res:Response)=>{
     try{
-        const request= await AgentCashOut.find({userId:req.body.userId})
-        res.status(200).json(request)
-    }catch(err){
-        console.log(err)
-        throw new BadRequestError('internal server error')
+        const requests= await AgentCashOut.find({userId:req.body.userId})
+        res.status(200).json({results:{message:'OK',dataItems:requests}})
+    }catch(err:any){
+        throw new Error(err.message)
     }
     })
 
