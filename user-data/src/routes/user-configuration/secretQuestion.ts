@@ -70,7 +70,12 @@ router.delete(
   async (req: Request, res: Response) => {
     try {
       const { id } = req.body;
-      const deletedQuestion = await SecretQuestion.deleteOne({ _id: id });
+      const deletedQuestion = await SecretQuestion.findOneAndDelete({
+        _id: id,
+      });
+      if (!deletedQuestion) {
+        throw new Error();
+      }
       res.send(deletedQuestion);
     } catch (error) {
       throw new BadRequestError('Unable to delete Question.');

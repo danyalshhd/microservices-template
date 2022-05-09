@@ -122,16 +122,8 @@ router.put(
       town != null && (address.town = town);
       fullAddress != null && (address.fullAddress = fullAddress);
       Object.keys(address).length > 0 && (updateObj.address = address);
-      coordinates && (coordinatesKeys = Object.keys(coordinates));
-      coordinatesKeys.length > 0 && (updateObj.coordinates = {});
-      if (coordinatesKeys.length > 0) {
-        for (let i = 0; i < coordinatesKeys.length; i++) {
-          (coordinates[coordinatesKeys[i]] != null ||
-            coordinates[coordinatesKeys[i]] === 0) &&
-            (updateObj.coordinates[coordinatesKeys[i]] =
-              coordinates[coordinatesKeys[i]]);
-        }
-      }
+      coordinatesKeys = Object.keys(coordinates);
+      coordinatesKeys.length > 0 && (updateObj.coordinates = coordinates);
       const updatedAgent = await Agent.findOneAndUpdate(
         { _id: id },
         convertToDotNotation(updateObj),
