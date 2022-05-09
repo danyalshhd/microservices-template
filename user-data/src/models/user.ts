@@ -100,9 +100,6 @@ const userSchema = new mongoose.Schema(
     lastName: {
       type: String,
     },
-    dob: {
-      type: String,
-    },
     trnNumber: {
       type: String,
     },

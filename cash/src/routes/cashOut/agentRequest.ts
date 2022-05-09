@@ -1,11 +1,11 @@
-import express, {Request,Response} from "express";
+import express, {Request,Response} from 'express';
 import { validateRequest, BadRequestError, NotFoundError } from '@dstransaction/common';
-import { NotificationCreatedPublisher } from "../../events/publishers/notification-created-publisher";
-import { natsWrapper } from "../../nats-wrapper";
-import { AgentCashOut } from "../../models/request";
-import { body } from "express-validator";
-import { User } from "../../models/user";
-import mongoose from "mongoose";
+import { NotificationCreatedPublisher } from '../../events/publishers/notification-created-publisher';
+import { natsWrapper } from '../../nats-wrapper';
+import { AgentCashOut } from '../../models/request';
+import { body } from 'express-validator';
+import { User } from '../../models/user';
+import mongoose from 'mongoose';
 
 
 const router=express.Router();
@@ -18,10 +18,10 @@ async(req:Request,res:Response)=>{
 
     const user=await User.findOne({email});
     if(!user){
-        throw new BadRequestError("user does not exist")
+        throw new BadRequestError('user does not exist')
     }
     if(!mongoose.isValidObjectId(agentId)){
-        throw new BadRequestError("You did not enter a valid Agent Id")
+        throw new BadRequestError('You did not enter a valid Agent Id')
     }
     try{
 
@@ -33,9 +33,9 @@ async(req:Request,res:Response)=>{
             userId:user._id,
             createdAt:new Date(),
             agentId:new mongoose.Types.ObjectId(agentId),
-            cash_in_out:"out",
+            cash_in_out:'out',
             amount,
-            status:"created",
+            status:'created',
             expiresAt:expiration,
         })
         await request.save()
@@ -47,12 +47,11 @@ async(req:Request,res:Response)=>{
             createdAt:new Date(),
         })
 
-        request.status="pending";
+        request.status='pending';
         await request.save()
-        res.status(200).json({message:`notification sent to user ${user.email}`,payload:request})
-    }catch(err){
-        console.log(err)
-        throw new BadRequestError('internal server error')
+        res.status(200).json({results:{message:'OK',data:{notification:`notification sent to user ${user.email}`,payload:request}}})
+    }catch(err:any){
+        throw new Error(err.message)
     }
     })
 

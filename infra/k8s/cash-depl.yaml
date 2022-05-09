@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cash-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cash
+  template:
+    metadata:
+      labels:
+        app: cash
+    spec:
+      containers:
+        - name: cash
+          image: digicel/cash:latest
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cash-srv
+spec:
+  selector:
+    app: cash
+  ports:
+    - name: cash
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

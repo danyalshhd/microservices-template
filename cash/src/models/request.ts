@@ -1,37 +1,37 @@
-import mongoose, {Document, Types} from "mongoose";
+import mongoose, {Document, Types} from 'mongoose';
 
 // An interface that describes the properties
 // that are requried to create a new Request
 interface AgentAttrs{
-  userId: mongoose.Types.ObjectId;
+  userId: string;
   createdAt:Date;
-  kind:"agentCashIn"|"agentCashOut"|"friend";
+  kind:'agentCashIn'|'agentCashOut'|'friend';
   agentId:mongoose.Types.ObjectId;
-  cash_in_out:"in"|"out";
+  cash_in_out:'in'|'out';
   amount:number;
 }
 
 
 interface AgentCashOutAttrs extends AgentAttrs{
-  status:"created"|"pending"|"accepted"|"rejected";
+  status:'created'|'pending'|'accepted'|'rejected';
   expiresAt:Date;
 }
 interface FriendAttrs{
-  userId: mongoose.Types.ObjectId;
+  userId:string;
   createdAt:Date;
-  kind:"agentCashIn"|"agentCashOut"|"friend";
-  friendId:mongoose.Types.ObjectId;
+  kind:'agentCashIn'|'agentCashOut'|'friend';
+  friendId:string;
   deleted:boolean;
   amount: number;
-  status:"created"|"pending"|"accepted"|"rejected";
+  status:'created'|'pending'|'accepted'|'rejected';
   expiresAt:Date;
 }
 
 
 interface RequestAttrs {
-  userId: mongoose.Types.ObjectId;
+  userId:string;
   createdAt:Date;
-  kind:"agentCashIn"|"agentCashOut"|"friend";
+  kind:'agentCashIn'|'agentCashOut'|'friend';
 }
 
 
@@ -43,9 +43,9 @@ interface RequestModel extends mongoose.Model<RequestDoc> {
 // An interface that describes the properties
 // that a Request Document has
 interface RequestDoc extends mongoose.Document {
-  userId: mongoose.Types.ObjectId;
+  userId: string;
   createdAt:Date;
-  kind:"agentCashIn"|"agentCashOut"|"friend";
+  kind:'agentCashIn'|'agentCashOut'|'friend';
 }
 
 const friendSchema= new mongoose.Schema({
@@ -115,7 +115,7 @@ const requestSchema = new mongoose.Schema(
   {
 
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       required: true,
       index: true,
     },
@@ -144,10 +144,10 @@ requestSchema.statics.build = (attrs: RequestAttrs) => {
   return new Requests(attrs);
 };
 
-const Requests = mongoose.model<RequestDoc, RequestModel>("Request", requestSchema);
-const AgentCashIn=Requests.discriminator<AgentAttrs>("agentCashIn",AgentSchema);
-const AgentCashOut=Requests.discriminator<AgentCashOutAttrs>("agentCashOut",AgentCashOutSchema);
-const Friend=Requests.discriminator<FriendAttrs>("friend",friendSchema)
+const Requests = mongoose.model<RequestDoc, RequestModel>('Request', requestSchema);
+const AgentCashIn=Requests.discriminator<AgentAttrs>('agentCashIn',AgentSchema);
+const AgentCashOut=Requests.discriminator<AgentCashOutAttrs>('agentCashOut',AgentCashOutSchema);
+const Friend=Requests.discriminator<FriendAttrs>('friend',friendSchema)
 
 
 export { Requests,AgentCashIn,AgentCashOut,Friend };
