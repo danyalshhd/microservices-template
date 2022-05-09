@@ -17,7 +17,6 @@ router.post(
     const user = PortalUser.build({
       name,
       email,
-      role,
     });
     await user.save();
     res.status(201).send(user);
@@ -34,11 +33,11 @@ router.get(
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { name, email, role } = req.body;
+      const { name, email} = req.body;
       let queryObj: any = {};
       name && (queryObj.name = name);
       email && (queryObj.email = email);
-      role && (queryObj.role = role);
+      // role && (queryObj.role = role);
       let users = await PortalUser.find(queryObj);
       res.send(users);
     } catch (error) {
@@ -58,11 +57,11 @@ router.put(
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { id, name, email, role } = req.body;
+      const { id, name, email } = req.body;
       let updateObj: any = {};
       name != null && (updateObj.name = name);
       email != null && (updateObj.email = email);
-      role != null && (updateObj.role = role);
+      // role != null && (updateObj.role = role);
       const updatedUser = await PortalUser.findOneAndUpdate(
         { _id: id },
         updateObj,

@@ -27,6 +27,9 @@ import { forgotpasswordRouter } from './routes/forgotPassowrd';
 import { errorHandler, NotFoundError } from '@dstransaction/common';
 import { resendOTPRouter } from './routes/resendOTP';
 import { changePasswordRouter } from './routes/changePassword';
+import { verifyMPIN } from './routes/MPIN';
+import { refreshSession } from './routes/refreshSession';
+import { autoversignupRouter } from './routes/autoversignup';
 const cors = require('cors');
 
 // const app = express();
@@ -70,6 +73,9 @@ app.use(FAQRouter);
 app.use(forgotpasswordRouter);
 app.use(resendOTPRouter);
 app.use(changePasswordRouter);
+app.use(verifyMPIN);
+app.use(refreshSession);
+app.use(autoversignupRouter);
 
 app.all('*', async (req, res) => {
   throw new NotFoundError();

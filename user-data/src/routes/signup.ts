@@ -25,7 +25,7 @@ router.post('/api/users/signup', [
     let attributeList: any = [];
     let userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({ Name: "email", Value: email }));
-    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({ Name: "phone_number", Value: phoneNumber }));
+    // attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({ Name: "phone_number", Value: phoneNumber }));
     userPool.signUp(email || phoneNumber, password, attributeList, null, async (err: any, data: any) => {
       if (err) {
         console.log('Error: ', err);

@@ -5,7 +5,6 @@ import mongoose from 'mongoose';
 interface PortalUserAttrs {
   name: string;
   email: string;
-  role: string;
 }
 
 // An interface that describes the properties
@@ -19,7 +18,6 @@ interface PortalUserModel extends mongoose.Model<PortalUserDoc> {
 interface PortalUserDoc extends mongoose.Document {
   name: string;
   email: string;
-  role: string;
   password: string;
 }
 
@@ -33,13 +31,9 @@ const PortalUserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    role: {
-      type: String,
-      required: true,
-    },
     password: {
       type: String,
-    }
+    },
   },
   {
     toJSON: {
@@ -56,6 +50,9 @@ PortalUserSchema.statics.build = (attrs: PortalUserAttrs) => {
   return new PortalUser(attrs);
 };
 
-const PortalUser = mongoose.model<PortalUserDoc, PortalUserModel>('PortalUser', PortalUserSchema);
+const PortalUser = mongoose.model<PortalUserDoc, PortalUserModel>(
+  'PortalUser',
+  PortalUserSchema
+);
 
-export { PortalUser};
+export { PortalUser };
