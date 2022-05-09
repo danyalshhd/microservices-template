@@ -17,9 +17,9 @@ spec:
           image: digicel/user-data:latest
           env:
             - name: AWS_CLIENT_ID
-              value: 'nagu8qk98nrsq5j5d0dj7abo1'
+              value: '1kffecgahvsb2cnmg00avkup6h'
             - name: AWS_POOL_ID
-              value: 'us-east-1_VHjwDBnd3'
+              value: 'us-east-1_cBhmA75S1'
             - name: AWS_REGION
               value: 'us-east-1'
             - name: AWS_BUCKET_NAME
