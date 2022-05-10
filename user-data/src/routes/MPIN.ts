@@ -3,6 +3,7 @@ import { body } from 'express-validator';
 import { currentUser } from '@dstransaction/common';
 import { User } from '../models/user';
 import {Password} from '../services/password';
+import { BadRequestError, NotAuthorizedError } from '@dstransaction/common';
 
 const router = express.Router()
 
@@ -14,7 +15,7 @@ router.post('/api/users/verifympin', currentUser , (req: Request, res: Response)
     User.findOne({ _id: sub },
         { mpin: 1 , _id: 0}, async (err: any, docs: any) => {
         if (err){
-            console.log("Error : ", err);
+            throw new BadRequestError('Unable to verify MPin.')
         }
         else{
             const mpinMatch = await Password.compare(
@@ -23,12 +24,12 @@ router.post('/api/users/verifympin', currentUser , (req: Request, res: Response)
               );
             if (!mpinMatch)
             {
-                res.status(401).send(`Wrong MPIN`);
-                return;
+                // res.status(401).send(`Wrong MPIN`);
+                throw new NotAuthorizedError()
             }
             else
-            {
-                res.status(200).send(`MPIN Verified`);
+            {   let response = { results: {message: 'SUCCESS'}}
+                res.status(200).send(response);
                 return;
             }
         }

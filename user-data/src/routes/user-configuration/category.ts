@@ -24,6 +24,43 @@ router.post(
   }
 );
 
+router.post(
+  '/api/product/bulkCategory',
+  [body('categories').isArray()],
+  validateRequest,
+  async (req: Request, res: Response) => {
+    try {
+      const { categories } = req.body;
+      let bulkAdd = categories.map((obj: any) => {
+        return {
+          updateOne: {
+            filter: { country: obj.country, name: obj.name },
+            update: { $set: { country: obj.country, name: obj.name} },
+            upsert: true,
+          },
+        };
+      });
+      const addCategories = await Category.bulkWrite(bulkAdd);
+      let addedCategories = addCategories.getUpsertedIds();
+      if (addedCategories.length > 0) {
+        addedCategories.forEach((obj: any) => {
+          delete Object.assign(obj, { ['id']: obj['_id'] })['_id'];
+          obj.country = categories[obj.index].country;
+          obj.name = categories[obj.index].name;
+        });
+        let response = {results: {message: "SUCCESS", dataItems: addedCategories}}
+        res.status(201).send(response);
+      }
+      else{
+        let response = {results: {message: "OK", dataItems: addedCategories}}
+        res.status(201).send(response);
+      }
+    } catch (error) {
+      throw new BadRequestError('Unable to insert bulk insert categories.');
+    }
+  }
+);
+
 router.get(
   '/api/product/category',
   [
