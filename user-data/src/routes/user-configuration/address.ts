@@ -15,7 +15,12 @@ router.post(
     if (existingParish) {
       throw new BadRequestError('Parish with this name is already present.');
     }
-    const address = Parish.build({ parishName, towns });
+    let obj: any = {};
+    parishName && (obj.parishName = parishName);
+    if (towns) {
+      towns.length > 0 && (obj.towns = towns);
+    }
+    const address = Parish.build(obj);
     await address.save();
     res.status(201).send({ results: { message: 'SUCCESS', data: address } });
   }
@@ -34,6 +39,67 @@ router.get(
       res.send({ results: { message: 'SUCCESS', dataItems: addresses } });
     } catch (error) {
       throw new BadRequestError('Unable to get Parish and Towns');
+    }
+  }
+);
+
+router.put(
+  '/api/product/address',
+  [
+    body('id').isString(),
+    body('parishName').isString(),
+    body('towns').isArray(),
+  ],
+  validateRequest,
+  async (req: Request, res: Response) => {
+    try {
+      const { id, parishName, towns } = req.body;
+      let newTowns = towns.map((town: any) => {
+        return { _id: town.id, townName: town.townName };
+      });
+      let updated = await Parish.findByIdAndUpdate(
+        { _id: id },
+        { parishName, towns: newTowns },
+        { new: true }
+      );
+      if (!updated) {
+        throw new Error();
+      }
+      res.send(updated);
+      // let bulkTownAdd = towns.map((obj: any) => {
+      //   const { townName } = obj;
+      //   if (obj.id) {
+      //     return {
+      //       updateOne: {
+      //         filter: { _id: id, 'towns._id': obj.id },
+      //         update: { $set: { 'towns.$.townName': obj.townName } },
+      //         upsert: true,
+      //       },
+      //     };
+      //   }
+      // });
+    } catch (error) {
+      throw new BadRequestError('Unable to update Parishes.');
+    }
+  }
+);
+
+router.delete(
+  '/api/product/address',
+  [body('id').optional().isString()],
+  validateRequest,
+  async (req: Request, res: Response) => {
+    try {
+      const { id } = req.body;
+      const deleteParish = await Parish.findOneAndDelete({
+        _id: id,
+      });
+      if (!deleteParish) {
+        throw new Error();
+      }
+      res.send(deleteParish);
+    } catch (error) {
+      throw new BadRequestError('Unable to delete Parish');
     }
   }
 );
