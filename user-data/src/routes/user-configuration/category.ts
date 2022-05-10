@@ -35,7 +35,7 @@ router.post(
         return {
           updateOne: {
             filter: { country: obj.country, name: obj.name },
-            update: { $set: { country: obj.country, name: obj.name} },
+            update: { $set: { country: obj.country, name: obj.name } },
             upsert: true,
           },
         };
@@ -48,12 +48,15 @@ router.post(
           obj.country = categories[obj.index].country;
           obj.name = categories[obj.index].name;
         });
-        let response = {results: {message: "SUCCESS", dataItems: addedCategories}}
+        let response = {
+          results: { message: 'SUCCESS', dataItems: addedCategories },
+        };
         res.status(201).send(response);
-      }
-      else{
-        let response = {results: {message: "OK", dataItems: addedCategories}}
-        res.status(201).send(response);
+      } else {
+        let response = {
+          results: { message: 'OK', dataItems: addedCategories },
+        };
+        res.status(200).send(response);
       }
     } catch (error) {
       throw new BadRequestError('Unable to insert bulk insert categories.');

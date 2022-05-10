@@ -49,6 +49,82 @@ router.post(
   }
 );
 
+router.post(
+  '/api/product/bulkAgents',
+  [body('agents').isArray()],
+  validateRequest,
+  async (req: Request, res: Response) => {
+    try {
+      const { agents } = req.body;
+      let bulkAdd = agents.map((obj: any) => {
+        const {
+          agentId,
+          agentName,
+          parish,
+          town,
+          fullAddress,
+          bankId,
+          rating,
+          latitude,
+          longitude,
+        } = obj;
+        let coordinates: any = { latitude, longitude };
+        let address: any = { parish, town, fullAddress };
+        let updateObj = {
+          agentId,
+          agentName,
+          address,
+          bankId,
+          rating,
+          coordinates,
+        };
+        return {
+          updateOne: {
+            filter: { agentId: obj.agentId },
+            update: {
+              $set: updateObj,
+            },
+            upsert: true,
+          },
+        };
+      });
+      const addAgent = await Agent.bulkWrite(bulkAdd);
+      let addedAgents = addAgent.getUpsertedIds();
+      if (addedAgents.length > 0) {
+        addedAgents.forEach((obj: any) => {
+          delete Object.assign(obj, { ['id']: obj['_id'] })['_id'];
+          obj.agentId = agents[obj.index].agentId;
+          obj.agentName = agents[obj.index].agentName;
+          let address = {
+            parish: agents[obj.index].parish,
+            town: agents[obj.index].town,
+            fullAddress: agents[obj.index].fullAddress,
+          };
+          obj.address = address;
+          obj.bankId = agents[obj.index].bankId;
+          obj.rating = agents[obj.index].rating;
+          let coordinates = {
+            latitude: agents[obj.index].latitude,
+            longitude: agents[obj.index].longitude,
+          };
+          obj.coordinates = coordinates;
+        });
+        let response = {
+          results: { message: 'SUCCESS', dataItems: addedAgents },
+        };
+        res.status(201).send(response);
+      } else {
+        let response = {
+          results: { message: 'OK', dataItems: addedAgents },
+        };
+        res.status(200).send(response);
+      }
+    } catch (error) {
+      throw new BadRequestError('Unable to insert bulk insert agents.');
+    }
+  }
+);
+
 router.get(
   '/api/product/agent',
   [
@@ -75,6 +151,16 @@ router.get(
     } catch (error) {
       throw new BadRequestError('Unable to retrieve Agents.');
     }
+  }
+);
+
+router.post(
+  '/api/product/bulkAgent',
+  [body('agents').isArray()],
+  validateRequest,
+  async (req: Request, res: Response) => {
+    try {
+    } catch (error) {}
   }
 );
 
