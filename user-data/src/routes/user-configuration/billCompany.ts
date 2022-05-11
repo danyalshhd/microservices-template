@@ -1,41 +1,42 @@
 import { BadRequestError, validateRequest } from '@dstransaction/common';
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
-import { Company } from '../../models/user-configuration/company';
+import { BillCompany } from '../../models/user-configuration/billCompany';
 const router = express.Router();
 
 router.post(
-  '/api/product/company',
+  '/api/product/billCompany',
   [
     body('companyName').isString(),
     body('paymentType').isString(),
-    body('category').isString(),
+    body('billCategory').isString(),
+    body('billAccount').isString(),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    const { companyName, paymentType, category } = req.body;
-    let existingCompany = await Company.findOne({
+    const { companyName, paymentType, billCategory, billAccount } = req.body;
+    let existingCompany = await BillCompany.findOne({
       companyName,
-      paymentType,
-      category,
+      billCategory,
     });
     if (existingCompany) {
       throw new BadRequestError(
         'Company with this companyName is already present.'
       );
     }
-    const company = Company.build({ companyName, paymentType, category });
+    const company = BillCompany.build({ companyName, paymentType, billCategory, billAccount });
     await company.save();
+    await company.populate({path: 'billCategory'})
     res.status(201).send(company);
   }
 );
 
 router.get(
-  '/api/product/company',
+  '/api/product/billCompany',
   [
     body('companyName').optional().isString(),
     body('paymentType').optional().isString(),
-    body('category').optional().isString(),
+    body('billCategory').optional().isString(),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
@@ -45,7 +46,7 @@ router.get(
       companyName && (queryObj.companyName = companyName);
       paymentType && (queryObj.paymentType = paymentType);
       category && (queryObj.category = category);
-      let companies = await Company.find(queryObj);
+      let companies = await BillCompany.find(queryObj).populate({path:'billCategory'});
       res.send(companies);
     } catch (error) {
       throw new BadRequestError('Unable to retrieve Companies.');
@@ -54,28 +55,28 @@ router.get(
 );
 
 router.put(
-  '/api/product/company',
+  '/api/product/billCompany',
   [
     body('id').isString(),
     body('companyName').optional().isString(),
     body('paymentType').optional().isString(),
-    body('category').optional().isString(),
+    body('billCategory').optional().isString(),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { id, companyName, paymentType, category } = req.body;
+      const { id, companyName, paymentType, billCategory } = req.body;
       let updateObj: any = {};
       companyName != null && (updateObj.companyName = companyName);
       paymentType != null && (updateObj.paymentType = paymentType);
-      category != null && (updateObj.category = category);
-      const updatedCompany = await Company.findOneAndUpdate(
+      billCategory != null && (updateObj.billCategory = billCategory);
+      const updatedCompany = await BillCompany.findOneAndUpdate(
         { _id: id },
         updateObj,
         {
           new: true,
         }
-      );
+      ).populate({path:'billCategory'});
       if (!updatedCompany) {
         throw new Error();
       }
@@ -87,13 +88,13 @@ router.put(
 );
 
 router.delete(
-  '/api/product/company',
+  '/api/product/billCompany',
   body('id').isString(),
   validateRequest,
   async (req: Request, res: Response) => {
     try {
       const { id } = req.body;
-      const deletedCompany = await Company.deleteOne({ _id: id });
+      const deletedCompany = await BillCompany.deleteOne({ _id: id });
       res.send(deletedCompany);
     } catch (error) {
       throw new BadRequestError('Unable to delete Company.');
@@ -101,4 +102,4 @@ router.delete(
   }
 );
 
-export { router as companyRouter };
+export { router as billCompanyRouter };

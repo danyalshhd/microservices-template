@@ -2,6 +2,7 @@
 import express from 'express';
 import 'express-async-errors';
 import { json } from 'body-parser';
+import { randomBytes } from 'crypto';
 import mongoose from 'mongoose';
 import cookieSession from 'cookie-session';
 import cookieParser from 'cookie-parser';
@@ -17,12 +18,13 @@ import { bankRouter } from './routes/user-configuration/bank';
 import { privacyPolicyRouter } from './routes/user-configuration/privacyPolicy';
 import { termConditionRouter } from './routes/user-configuration/termCondition';
 import { secretQuestionRouter } from './routes/user-configuration/secretQuestion';
-import { companyRouter } from './routes/user-configuration/company';
+import { billCompanyRouter } from './routes/user-configuration/billCompany';
 import { countryRouter } from './routes/user-configuration/country';
 import { agentRouter } from './routes/user-configuration/agent';
 import { portalUserRouter } from './routes/user-configuration/portalUser';
 import { editProfileRouter } from './routes/editProfile';
 import { FAQRouter } from './routes/user-configuration/faq';
+import { billCategoryRouter } from './routes/user-configuration/billCategory';
 import { addressRouter } from './routes/user-configuration/address';
 import { forgotpasswordRouter } from './routes/forgotPassowrd';
 import { errorHandler, NotFoundError } from '@dstransaction/common';
@@ -65,12 +67,13 @@ app.use(categoryRouter);
 app.use(bankRouter);
 app.use(privacyPolicyRouter);
 app.use(termConditionRouter);
-app.use(companyRouter);
+app.use(billCompanyRouter);
 app.use(secretQuestionRouter);
 app.use(countryRouter);
 app.use(agentRouter);
 app.use(portalUserRouter);
 app.use(FAQRouter);
+app.use(billCategoryRouter);
 app.use(addressRouter);
 app.use(forgotpasswordRouter);
 app.use(resendOTPRouter);
@@ -99,7 +102,7 @@ const start = async () => {
   try {
     await natsWrapper.connect(
       process.env.NATS_CLUSTER_ID,
-      process.env.NATS_CLIENT_ID,
+      randomBytes(4).toString('hex'),
       process.env.NATS_URL
     );
 

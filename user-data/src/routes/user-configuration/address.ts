@@ -66,18 +66,6 @@ router.put(
         throw new Error();
       }
       res.send(updated);
-      // let bulkTownAdd = towns.map((obj: any) => {
-      //   const { townName } = obj;
-      //   if (obj.id) {
-      //     return {
-      //       updateOne: {
-      //         filter: { _id: id, 'towns._id': obj.id },
-      //         update: { $set: { 'towns.$.townName': obj.townName } },
-      //         upsert: true,
-      //       },
-      //     };
-      //   }
-      // });
     } catch (error) {
       throw new BadRequestError('Unable to update Parishes.');
     }

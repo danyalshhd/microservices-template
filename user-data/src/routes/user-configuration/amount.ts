@@ -11,6 +11,10 @@ router.post(
   async (req: Request, res: Response) => {
     try {
       const { amounts } = req.body;
+      if (amounts.length > 4) {
+        throw new Error();
+      }
+      await Amount.deleteMany({});
       let bulkAdd = amounts.map((obj: any) => {
         return {
           updateOne: {

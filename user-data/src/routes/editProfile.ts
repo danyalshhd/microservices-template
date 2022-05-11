@@ -32,17 +32,28 @@ router.put(
   upload.single('image'),
   [
     body('userId').isString(),
+    body('firstName').isString(),
+    body('lastName').isString(),
     body('sourceOfIncome').optional().isAlpha(),
     body('streetAddress').optional().isObject(),
     body('email').optional().isEmail(),
   ],
   async (req: Request, res: Response) => {
     try {
-      const { userId, sourceOfIncome, streetAddress, email } = req.body;
+      const {
+        userId,
+        sourceOfIncome,
+        streetAddress,
+        email,
+        firstName,
+        lastName,
+      } = req.body;
       let update: any = {};
       let addressKeys: any = [];
+      firstName && (update.firstName = firstName);
+      lastName && (update.lastName = lastName);
+      email && (update.email = email);
       sourceOfIncome != null && (update.sourceOfIncome = sourceOfIncome);
-      email != null && (update.email = email);
       streetAddress && (addressKeys = Object.keys(streetAddress));
       addressKeys.length > 0 && (update.streetAddress = {});
       if (addressKeys.length > 0) {
@@ -58,7 +69,7 @@ router.put(
       }
       const userUpdate = await User.findOneAndUpdate(
         { _id: userId },
-        convertToDotNotation(update) , 
+        convertToDotNotation(update),
         { new: true }
       );
       if (!userUpdate) {
