@@ -21,11 +21,11 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: NATS_URL
-              value: 'http://nats-srv:4222'
+              value: "http://nats-srv:4222"
             - name: NATS_CLUSTER_ID
               value: digicel
             - name: MONGO_URI
-              value: 'mongodb://host.docker.internal:27017/transactions'
+              value: "mongodb://host.docker.internal:27017/digicel"
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:

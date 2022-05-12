@@ -1,0 +1,40 @@
+{
+  "name": "auth",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node-dev --rs src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@dstransaction/common": "^1.0.24",
+    "@onfido/api": "^2.2.0",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/cookie-session": "^2.0.44",
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/jsonwebtoken": "^8.5.8",
+    "@types/mongoose": "^5.11.97",
+    "amazon-cognito-identity-js": "^5.2.8",
+    "aws-sdk": "^2.1109.0",
+    "body-parser": "^1.20.0",
+    "cookie-parser": "^1.4.6",
+    "cookie-session": "^2.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "express-async-errors": "^3.1.1",
+    "express-validator": "^6.14.0",
+    "jsonwebtoken": "^8.5.1",
+    "jwk-to-pem": "^2.0.5",
+    "moment": "^2.29.2",
+    "mongoose": "^6.2.4",
+    "multer": "^1.4.4",
+    "node-fetch": "^3.2.3",
+    "node-nats-streaming": "^0.3.2",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.6.2"
+  }
+}

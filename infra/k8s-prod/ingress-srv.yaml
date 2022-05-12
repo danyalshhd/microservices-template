@@ -4,7 +4,7 @@ metadata:
   name: ingress-srv
   annotations:
     kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/use-regex: 'true'
 spec:
   rules:
     - host: digicel.dev
@@ -14,7 +14,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: auth-srv
+                name: user-data-srv
                 port:
                   number: 3000
           - path: /api/transactions/?(.*)
@@ -31,4 +31,3 @@ spec:
                 name: accounts-srv
                 port:
                   number: 3000
-          

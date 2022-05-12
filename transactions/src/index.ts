@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import { app } from './app';
+import { AccountCancelledListener } from './events/listeners/account-cancelled-listener';
+import { AccountCreatedListener } from './events/listeners/account-created-listener';
 import { natsWrapper } from './nats-wrapper';
 
 const start = async () => {
@@ -29,14 +31,17 @@ const start = async () => {
     process.on('SIGINIT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());
 
+    new AccountCreatedListener(natsWrapper.client).listen();
+    new AccountCancelledListener(natsWrapper.client).listen();
+
     await mongoose.connect(process.env.MONGO_URI);
     console.log('Connected to MongoDb');
   } catch (err) {
     console.error(err);
   }
-
-  app.listen(3000, () => {
-    console.log('Listening on port 3000!');
+  let port = 3000;
+  app.listen(port, () => {
+    console.log(`Listening on port ${port}!`);
   });
 };
 

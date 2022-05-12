@@ -1,6 +1,7 @@
 import express from 'express';
 import 'express-async-errors';
 import { json } from 'body-parser';
+import cookieParser from 'cookie-parser';
 import cookieSession from 'cookie-session';
 import { errorHandler, NotFoundError, currentUser } from '@dstransaction/common';
 import { createTransactionRouter } from './routes/new';
@@ -11,6 +12,7 @@ import { updateTransactionRouter } from './routes/update';
 const app = express();
 app.set('trust proxy', true);
 app.use(json());
+app.use(cookieParser());
 app.use(
   cookieSession({
     signed: false,

@@ -1,5 +1,7 @@
+import { AccountStatus } from "@dstransaction/common";
 import mongoose from "mongoose";
 import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
+import { Account } from "./account";
 
 interface TransactionAttrs {
   id: string;
@@ -11,7 +13,7 @@ export interface TransactionDoc extends mongoose.Document {
   title: string,
   price: number,
   version: number,
-  //isAlreadyPresent(): Promise<boolean>;
+  isReserved(): Promise<boolean>;
 }
 
 interface TransactionModel extends mongoose.Model<TransactionDoc> {
@@ -56,10 +58,21 @@ transactionSchema.statics.build = (attrs: TransactionAttrs) => {
   })
 }
 
-// transactionSchema.methods.isAlreadyPresent = async function() {
-// due to function keyword we get this as 'transaction' current context.
-  //return !!ex;
-// }
+transactionSchema.methods.isReserved = async function () {
+  // this === the ticket document that we just called 'isReserved' on
+  const existingOrder = await Account.findOne({
+    ticket: this as any,
+    status: {
+      $in: [
+        AccountStatus.Created,
+        AccountStatus.AwaitingPayment,
+        AccountStatus.Complete,
+      ],
+    },
+  });
+
+  return !!existingOrder;
+};
 
 const Transaction = mongoose.model<TransactionDoc, TransactionModel>('Transaction', transactionSchema);
 

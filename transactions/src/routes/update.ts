@@ -5,6 +5,7 @@ import {
   NotFoundError,
   requireAuth,
   NotAuthorizedError,
+  BadRequestError,
 } from '@dstransaction/common';
 import { Transaction } from '../models/transaction';
 import { TransactionUpdatedPublisher } from '../events/publishers/transaction-updated-publisher';
@@ -27,6 +28,10 @@ router.put(
 
     if (!transaction) {
       throw new NotFoundError();
+    }
+
+    if (transaction.accountId) {
+      throw new BadRequestError('Cannot edit a reserved transaction');
     }
 
     if (transaction.userId !== req.currentUser!.id) {

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { app } from './app';import { randomBytes } from 'crypto';
+import { app } from './app'; import { randomBytes } from 'crypto';
 import { natsWrapper } from './nats-wrapper';
 import { TransactionCreatedListener } from './events/listeners/transaction-created-listener';
 import { TransactionUpdatedListener } from './events/listeners/transaction-updated-listener';
@@ -40,7 +40,6 @@ const start = async () => {
   } catch (err) {
     console.error(err);
   }
-
   app.listen(3000, () => {
     console.log('Listening on port 3000!');
   });

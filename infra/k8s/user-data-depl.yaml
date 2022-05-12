@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-data-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-data
+  template:
+    metadata:
+      labels:
+        app: user-data
+    spec:
+      containers:
+        - name: user-data
+          image: digicel/user-data:latest
+          env:
+            - name: AWS_CLIENT_ID
+              value: "nagu8qk98nrsq5j5d0dj7abo1"
+            - name: AWS_POOL_ID
+              value: "us-east-1_VHjwDBnd3"
+            - name: AWS_REGION
+              value: "us-east-1"
+            # - name: AWS_BUCKET_NAME
+            #   value: "digicell-bucket"
+            # - name: AWS_BUCKET_REGION
+            #   value: ""
+            # - name: ACCESS_KEY_ID
+            #   value: ""
+            # - name: AWS_SECRET_ACCESS_KEY
+            #   value: ""
+            - name: MONGO_URI
+              value: "mongodb://host.docker.internal:27017/digicel"
+            - name: ONFIDO_API_TOKEN
+              value: "api_sandbox_us.8KwrDixPGsf.Fdk4MLj49BDteYnyoKRZALcRDh6QYi6m"
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL
+              value: "http://nats-srv:4222"
+            - name: NATS_CLUSTER_ID
+              value: digicel
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-data-srv
+spec:
+  selector:
+    app: user-data
+  ports:
+    - name: user-data
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

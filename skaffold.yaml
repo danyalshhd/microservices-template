@@ -9,8 +9,8 @@ build:
   local:
     push: false
   artifacts:
-    - image: digicel/auth
-      context: auth
+    - image: digicel/user-data
+      context: user-data
       docker:
         dockerfile: DockerFile
       sync:
@@ -41,3 +41,27 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: digicel/notifications
+      context: notifications
+      docker:
+        dockerfile: DockerFile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
+    - image: digicel/expiration
+      context: expiration
+      docker:
+        dockerfile: DockerFile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
+    # - image: digicel/cash
+    #   context: cash
+    #   docker:
+    #     dockerfile: DockerFile
+    #   sync:
+    #     manual:
+    #       - src: "src/**/*.ts"
+    #         dest: .

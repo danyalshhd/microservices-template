@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notifications-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notifications
+  template:
+    metadata:
+      labels:
+        app: notifications
+    spec:
+      containers:
+        - name: notifications
+          image: digicel/notifications:latest
+          env:
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL
+              value: "http://nats-srv:4222"
+            - name: NATS_CLUSTER_ID
+              value: digicel
+            - name: MONGO_URI
+              value: "mongodb://host.docker.internal:27017/digicel"
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+            - name: FIREBASE_CERT
+              value: >
+                {
+                  "type": "service_account",
+                  "project_id": "digicel-f17dd",
+                  "private_key_id": "451920c82a458b754926e95ff8213dd017ce7ecb",
+                  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDwoLjYmTWeOH6V\nLqCQNOammXHOjQa9g+J/CB6ysYKrqysB0eH4goVlGx6Gk7hwfQH9mPOXvZ96ErIO\nHXvYde+gxSVNtBo+fWEQY4Ot6cptnp4rrzrlWKgGxzTxgctu6BR12aG0h/UCWcyo\nHgyEvs0NIYMUlVMQvnimkYSTulIuFhHkE8Zi9TDTyttrjms8KY5uXJgQrZGz8gnc\n0JZ0sr8wvLvlJGhxmFHteGLIWtgZFZkjppSoQ/M/mBnXkJMx0jwZ2P/jXMQ4dg8H\ndOqno7NIW2uqRm5x3QVgVufuUNtS0E88miXyOmoOipK/fzrAXR2hnnlrMCH1E02L\nAcKZuNFrAgMBAAECggEARvAS3mP4bx8XjjJTSoAV+UpmRy7DLG6rgKirqCF1tNc+\n1AgEdqc/3SksDB+TcbIguprzQSo5UBsf29JsVsmZ7csA7tHoJMEAsvyrbsNsFnn7\nBkTf94n16x2iKYqKpzULBx00M00beWhw0aUeKqo3OCZHhvNorBiC6BQhQg3dOVFc\n+KXxbpJCip2HCAYCxKGen2xwRKAqNpTz7a4Rxvg7YqKuSP4Wq7NFROiA16H40vvt\n0HNvIwDSr0+Wmxyy4EG/dfiRaTmL8HTgWjSztNK778sAcIGLlAOk+oILMjH88YMm\nlb4wsI1u5KHNgAVpXige7ic9MoRx4Bgkjw95omc0xQKBgQD5QGWiSmV5VpBimvjV\ndk6NikGHQxcLOjE/ms4IkvyduOqpNAiaCjDG/RlkaNv4nhqF0HDTbTuaihxx9Ert\nyzO5gV9wjYVnfkgIbx+KI3ICd2d57uvchf9qnvHZPhepaCjDXm9Ip/64gdQMusho\nxyC99ituwHIP2qCk5nZpe+qpDQKBgQD3JI11WIfbn8HoGjHyTbe3A50j2yFsIYf+\nOSis8IgZ/ygxjknw8y5r8BNxx75qLVuecmQW6eb+S2lpUw2ZF490fpjMeyJqaHSE\n688TDITx2QQ2X9CuUoMFEPLRe47jftYowFZwQfhWRmRHJg8zSeBlfwTw+mTdhq6D\nr3EwjytWVwKBgQDgOfN0bTMeViZr3nhOKDEAmcjbcxpu6jnVu2DwS7Lf/LN15i56\nzQIWcSh/sOl6nljD2sE1IoZFP0vZo+goRe5RSrZeHaJOeUc59yXLcpmk6F/5TFt4\ntj8RXs25HmfQ6bgKEZFRLngy6fCmRv31bHXjDmsCJjQ2WPq9feo2eNignQKBgASm\nUmb/yGaQZeSJAaGOZsNxtPYkvEc9hkJ5LtO6HsVmcIomJCv9V0U+mg8M8/8pZUzg\n2BM6SVdFcfFCV8ImmFNXwmYuduJLns2VZir0lFe8foDLYrC06rQgsoDQc0rCayMP\nI1EvXI26+03/YE/VtvwR3LTv8Q/d5dCib127g9Q3AoGBAK7bzO/b45tK87hB8ih2\nq9wpc4hL2BXfHTwCQaRvCcYdFeKejYGWj8lPYr3k8eAVP6tWpMsI46dqc2J9JcUC\n9HgtGIfR0FbcDu2gDEOQM7VKhpOq2RZMVzBO9H+Kuu11EpOS06K4lgC7zEOk9d0i\nry7omWuF84Q6Fo1qXhL+jEYf\n-----END PRIVATE KEY-----\n",
+                  "client_email": "firebase-adminsdk-if9dl@digicel-f17dd.iam.gserviceaccount.com",
+                  "client_id": "102167629469679840644",
+                  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                  "token_uri": "https://oauth2.googleapis.com/token",
+                  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+                  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-if9dl%40digicel-f17dd.iam.gserviceaccount.com"
+                }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notifications-srv
+spec:
+  selector:
+    app: notifications
+  ports:
+    - name: notifications
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

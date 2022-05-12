@@ -1,18 +1,19 @@
-import mongoose, { mongo } from 'mongoose';
+import mongoose from 'mongoose';
 import { AccountStatus } from '@dstransaction/common';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 import { TransactionDoc } from './transaction';
 
 interface AccountAttrs {
     userId: string;
     status: AccountStatus;
-    //expiresAt: Date;
+    expiresAt: Date;
     transaction: TransactionDoc;
 }
 
 interface AccountDoc extends mongoose.Document {
     userId: string;
     status: AccountStatus;
-    //expiresAt: Date;
+    expiresAt: Date;
     transaction: TransactionDoc;
     version: number;
 }
@@ -32,9 +33,9 @@ const accountSchema = new mongoose.Schema({
         enum: Object.values(AccountStatus),
         default: AccountStatus.Created
     },
-    // expiresAt: {
-    //     type: mongoose.Schema.Types.Date
-    // }
+    expiresAt: {
+        type: mongoose.Schema.Types.Date
+    },
     transaction: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Transaction',
@@ -47,6 +48,9 @@ const accountSchema = new mongoose.Schema({
         }
     }
 });
+
+accountSchema.set('versionKey', 'version');
+accountSchema.plugin(updateIfCurrentPlugin);
 
 accountSchema.statics.build = (attrs: AccountAttrs) => {
     return new Account(attrs);

@@ -18,10 +18,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@dstransaction/common": "^1.0.3",
+    "@dstransaction/common": "^1.0.24",
+    "@types/cookie-parser": "^1.4.2",
     "@types/cookie-session": "^2.0.42",
     "@types/express": "^4.17.12",
     "@types/jsonwebtoken": "^8.5.1",
+    "cookie-parser": "^1.4.6",
     "cookie-session": "^1.4.0",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",

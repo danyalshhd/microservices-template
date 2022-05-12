@@ -1,3 +1,6 @@
+user-data/node_modules
+user-data/package-lock.json
+
 auth/node_modules
 auth/package-lock.json
 
@@ -9,5 +12,17 @@ transactions/package-lock.json
 common/node_modules
 common/package-lock.json
 
+# product/node_modules
+# product/package-lock.json
+
 accounts/node_modules
 accounts/package-lock.json
+
+expiration/node_modules
+expiration/package-lock.json
+
+notifications/node_modules
+notifications/package-lock.json
+
+cash/node_modules
+cash/package-lock.json
