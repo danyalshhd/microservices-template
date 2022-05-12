@@ -17,29 +17,29 @@ spec:
           image: digicel/user-data:latest
           env:
             - name: AWS_CLIENT_ID
-              value: "nagu8qk98nrsq5j5d0dj7abo1"
+              value: '1kffecgahvsb2cnmg00avkup6h'
             - name: AWS_POOL_ID
-              value: "us-east-1_VHjwDBnd3"
+              value: 'us-east-1_cBhmA75S1'
             - name: AWS_REGION
-              value: "us-east-1"
-            # - name: AWS_BUCKET_NAME
-            #   value: "digicell-bucket"
-            # - name: AWS_BUCKET_REGION
-            #   value: ""
-            # - name: ACCESS_KEY_ID
-            #   value: ""
-            # - name: AWS_SECRET_ACCESS_KEY
-            #   value: ""
+              value: 'us-east-1'
+            - name: AWS_BUCKET_NAME
+              value: 'digicell-bucket'
+            - name: AWS_BUCKET_REGION
+              value: 'ap-southeast-1'
+            - name: ACCESS_KEY_ID
+              value: ''
+            - name: AWS_SECRET_ACCESS_KEY
+              value: ''
             - name: MONGO_URI
-              value: "mongodb://host.docker.internal:27017/digicel"
+              value: 'mongodb://host.docker.internal:27017/digicel'
             - name: ONFIDO_API_TOKEN
-              value: "api_sandbox_us.8KwrDixPGsf.Fdk4MLj49BDteYnyoKRZALcRDh6QYi6m"
+              value: 'api_sandbox_us.8KwrDixPGsf.Fdk4MLj49BDteYnyoKRZALcRDh6QYi6m'
             - name: NATS_CLIENT_ID
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
             - name: NATS_URL
-              value: "http://nats-srv:4222"
+              value: 'http://nats-srv:4222'
             - name: NATS_CLUSTER_ID
               value: digicel
             - name: JWT_KEY

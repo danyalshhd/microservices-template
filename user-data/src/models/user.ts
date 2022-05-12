@@ -5,17 +5,16 @@ import mongoose from 'mongoose';
 // that are requried to create a new User
 interface UserAttrs {
   _id: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   dob: string;
   email: string;
-  phone_number: string;
+  phoneNumber: string;
   password: string;
   mpin: string;
   biometric: boolean;
-  secret_question: string;
-  secret_answer: string;
-
+  secretQuestion: string;
+  secretAnswer: string;
 }
 
 // An interface that describes the properties
@@ -27,25 +26,23 @@ interface UserModel extends mongoose.Model<UserDoc> {
 // An interface that describes the properties
 // that a User Document has
 interface UserDoc extends mongoose.Document {
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   dob: string;
   email: string;
   onfidoApplicantId: string;
   onfidoCheckId: string;
   upgradeToMax: string;
-  firstName: string;
-  lastName: string;
   trnNumber: string;
   streetAddress: Address;
   sourceOfIncome: string;
   profilePicture: string;
-  phone_number: string;
+  phoneNumber: string;
   password: string;
   mpin: string;
   biometric: boolean;
-  secret_question: string;
-  secret_answer: string;
+  secretQuestion: string;
+  secretAnswer: string;
   lastLoginAttempt: string;
 }
 
@@ -76,11 +73,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    first_name: {
+    firstName: {
       type: String,
       required: true,
     },
-    last_name: {
+    lastName: {
       type: String,
       required: true,
     },
@@ -92,15 +89,6 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
     phoneNumber: {
-      type: String,
-    },
-    firstName: {
-      type: String,
-    },
-    lastName: {
-      type: String,
-    },
-    dob: {
       type: String,
     },
     trnNumber: {
@@ -140,28 +128,28 @@ const userSchema = new mongoose.Schema(
     },
     mpin: {
       type: String,
-      required: true
+      required: true,
     },
     biometric: {
       type: Boolean,
-      required: true
+      required: true,
     },
-    secret_question: {
+    secretQuestion: {
       type: String,
       required: true,
     },
-    secret_answer: {
+    secretAnswer: {
       type: String,
       required: true,
     },
     lastLoginAttempt: {
       type: String,
-      required: false
+      required: false,
     },
   },
   {
     toJSON: {
-      transform(doc, ret) {
+      transform(doc: any, ret: any) {
         ret.id = ret._id;
         delete ret._id;
         delete ret.password;

@@ -22,13 +22,10 @@ router.post(
 
 router.get(
   '/api/product/secretQuestion',
-  [body('question').optional().isString()],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { question } = req.body;
       let queryObj: any = {};
-      question && (queryObj.question = question);
       let secretQuestions = await SecretQuestion.find(queryObj);
       res.send(secretQuestions);
     } catch (error) {
@@ -70,7 +67,12 @@ router.delete(
   async (req: Request, res: Response) => {
     try {
       const { id } = req.body;
-      const deletedQuestion = await SecretQuestion.deleteOne({ _id: id });
+      const deletedQuestion = await SecretQuestion.findOneAndDelete({
+        _id: id,
+      });
+      if (!deletedQuestion) {
+        throw new Error();
+      }
       res.send(deletedQuestion);
     } catch (error) {
       throw new BadRequestError('Unable to delete Question.');

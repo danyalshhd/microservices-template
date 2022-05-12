@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 interface AgentAttrs {
   agentId: string;
   agentName: string;
-  location: string;
+  address: Address;
   bankId: string;
   rating: Number;
   coordinates: Coordinates;
@@ -22,12 +22,18 @@ interface Coordinates {
   longitude: Number;
 }
 
+interface Address {
+  parish: string;
+  town: string;
+  fullAddress: string;
+}
+
 // An interface that describes the properties
 // that a User Document has
 interface AgentDoc extends mongoose.Document {
   agentId: string;
   agentName: string;
-  location: string;
+  address: Address;
   bankId: string;
   rating: Number;
   coordinates: Coordinates;
@@ -45,6 +51,21 @@ const coordinatesSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const addressSchema = new mongoose.Schema(
+  {
+    parish: {
+      type: String,
+    },
+    town: {
+      type: String,
+    },
+    fullAddress: {
+      type: String,
+    },
+  },
+  { _id: false }
+);
+
 const AgentSchema = new mongoose.Schema(
   {
     agentId: {
@@ -55,9 +76,8 @@ const AgentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    location: {
-      type: String,
-      required: true,
+    address: {
+      type: addressSchema,
     },
     bankId: {
       type: String,

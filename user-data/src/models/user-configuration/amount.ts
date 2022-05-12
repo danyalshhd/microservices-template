@@ -41,6 +41,14 @@ AmountSchema.statics.build = (attrs: AmountAttrs) => {
   return new Amount(attrs);
 };
 
+// AmountSchema.pre('insertMany', async(next) => {
+//   // Remove all the assignment docs that reference the removed person.
+//   await new this.model('Amount').deleteMany({});
+//   next();
+// });
+
 const Amount = mongoose.model<AmountDoc, AmountModel>('Amount', AmountSchema);
+
+
 
 export { Amount };

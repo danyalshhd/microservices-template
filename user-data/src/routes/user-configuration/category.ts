@@ -1,6 +1,6 @@
 import { BadRequestError, validateRequest } from '@dstransaction/common';
 import express, { Request, Response } from 'express';
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 import { Category } from '../../models/user-configuration/category';
 const router = express.Router();
 
@@ -24,17 +24,57 @@ router.post(
   }
 );
 
+router.post(
+  '/api/product/bulkCategory',
+  [body('categories').isArray()],
+  validateRequest,
+  async (req: Request, res: Response) => {
+    try {
+      const { categories } = req.body;
+      let bulkAdd = categories.map((obj: any) => {
+        return {
+          updateOne: {
+            filter: { country: obj.country, name: obj.name },
+            update: { $set: { country: obj.country, name: obj.name } },
+            upsert: true,
+          },
+        };
+      });
+      const addCategories = await Category.bulkWrite(bulkAdd);
+      let addedCategories = addCategories.getUpsertedIds();
+      if (addedCategories.length > 0) {
+        addedCategories.forEach((obj: any) => {
+          delete Object.assign(obj, { ['id']: obj['_id'] })['_id'];
+          obj.country = categories[obj.index].country;
+          obj.name = categories[obj.index].name;
+        });
+        let response = {
+          results: { message: 'SUCCESS', dataItems: addedCategories },
+        };
+        res.status(201).send(response);
+      } else {
+        let response = {
+          results: { message: 'OK', dataItems: addedCategories },
+        };
+        res.status(200).send(response);
+      }
+    } catch (error) {
+      throw new BadRequestError('Unable to insert bulk insert categories.');
+    }
+  }
+);
+
 router.get(
   '/api/product/category',
   [
-    body('name').optional().isString(),
-    body('visible').optional().isBoolean(),
-    body('country').optional().isAlpha(),
+    query('name').optional().isString(),
+    query('visible').optional().isBoolean(),
+    query('country').optional().isAlpha(),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { name, country, visible } = req.body;
+      const { name, country, visible } = req.query;
       let queryObj: any = {};
       name && (queryObj.name = name);
       country && (queryObj.country = country);

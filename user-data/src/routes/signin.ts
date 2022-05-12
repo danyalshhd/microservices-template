@@ -63,6 +63,9 @@ router.post(
         res.status(200).cookie("idToken", result.getIdToken().getJwtToken(), {
           httpOnly: true,
           sameSite: "strict",
+        }).cookie("refreshToken", result.getRefreshToken().getToken(), {
+          httpOnly: true,
+          sameSite: "strict",
         }).json({
           "message": "User signed in successfully "
         });

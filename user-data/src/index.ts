@@ -1,6 +1,8 @@
+// require('dotenv').config();
 import express from 'express';
 import 'express-async-errors';
 import { json } from 'body-parser';
+import { randomBytes } from 'crypto';
 import mongoose from 'mongoose';
 import cookieSession from 'cookie-session';
 import cookieParser from 'cookie-parser';
@@ -16,15 +18,21 @@ import { bankRouter } from './routes/user-configuration/bank';
 import { privacyPolicyRouter } from './routes/user-configuration/privacyPolicy';
 import { termConditionRouter } from './routes/user-configuration/termCondition';
 import { secretQuestionRouter } from './routes/user-configuration/secretQuestion';
-import { companyRouter } from './routes/user-configuration/company';
+import { billCompanyRouter } from './routes/user-configuration/billCompany';
 import { countryRouter } from './routes/user-configuration/country';
 import { agentRouter } from './routes/user-configuration/agent';
+import { portalUserRouter } from './routes/user-configuration/portalUser';
 import { editProfileRouter } from './routes/editProfile';
-import { imageRouter } from './routes/upload-image';
+import { FAQRouter } from './routes/user-configuration/faq';
+import { billCategoryRouter } from './routes/user-configuration/billCategory';
+import { addressRouter } from './routes/user-configuration/address';
 import { forgotpasswordRouter } from './routes/forgotPassowrd';
 import { errorHandler, NotFoundError } from '@dstransaction/common';
 import { resendOTPRouter } from './routes/resendOTP';
 import { changePasswordRouter } from './routes/changePassword';
+import { verifyMPIN } from './routes/MPIN';
+import { refreshSession } from './routes/refreshSession';
+import { autoversignupRouter } from './routes/autoversignup';
 const cors = require('cors');
 
 // const app = express();
@@ -53,20 +61,26 @@ app.use(signinRouter);
 app.use(signoutRouter);
 app.use(signupRouter);
 app.use(onfidoRouter);
-app.use(imageRouter);
 app.use(editProfileRouter);
 app.use(amountRouter);
 app.use(categoryRouter);
 app.use(bankRouter);
 app.use(privacyPolicyRouter);
 app.use(termConditionRouter);
-app.use(companyRouter);
+app.use(billCompanyRouter);
 app.use(secretQuestionRouter);
 app.use(countryRouter);
 app.use(agentRouter);
+app.use(portalUserRouter);
+app.use(FAQRouter);
+app.use(billCategoryRouter);
+app.use(addressRouter);
 app.use(forgotpasswordRouter);
 app.use(resendOTPRouter);
 app.use(changePasswordRouter);
+app.use(verifyMPIN);
+app.use(refreshSession);
+app.use(autoversignupRouter);
 
 app.all('*', async (req, res) => {
   throw new NotFoundError();
@@ -75,9 +89,6 @@ app.all('*', async (req, res) => {
 app.use(errorHandler);
 
 const start = async () => {
-  if (!process.env.JWT_KEY) {
-    throw new Error('JWT_KEY must be defined');
-  }
   if (!process.env.NATS_CLIENT_ID) {
     throw new Error('NATS_CLIENT_ID must be defined');
   }
@@ -91,7 +102,7 @@ const start = async () => {
   try {
     await natsWrapper.connect(
       process.env.NATS_CLUSTER_ID,
-      process.env.NATS_CLIENT_ID,
+      randomBytes(4).toString('hex'),
       process.env.NATS_URL
     );
 

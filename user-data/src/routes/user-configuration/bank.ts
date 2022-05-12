@@ -1,6 +1,6 @@
 import { BadRequestError, validateRequest } from '@dstransaction/common';
 import express, { Request, Response } from 'express';
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 import { Bank } from '../../models/user-configuration/bank';
 const router = express.Router();
 
@@ -47,15 +47,15 @@ router.post(
 router.get(
   '/api/product/bank',
   [
-    body('bankName').optional().isString(),
-    body('bankCode').optional().isString(),
-    body('bankSwiftCode').optional().isString(),
-    body('institutionId').optional().isString(),
+    query('bankName').optional().isString(),
+    query('bankCode').optional().isString(),
+    query('bankSwiftCode').optional().isString(),
+    query('institutionId').optional().isString(),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { bankName, bankCode, bankSwiftCode, institutionId } = req.body;
+      const { bankName, bankCode, bankSwiftCode, institutionId } = req.query;
       let queryObj: any = {};
       bankName && (queryObj.bankName = bankName);
       bankCode && (queryObj.bankCode = bankCode);

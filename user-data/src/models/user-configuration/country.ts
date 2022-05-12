@@ -6,7 +6,8 @@ interface CountryAttrs {
   countryName: string;
   countryCode: string;
   phonePrefix: string;
-  flag: string;
+  // flag: string;
+  visible: boolean;
 }
 
 // An interface that describes the properties
@@ -45,7 +46,7 @@ const CountrySchema = new mongoose.Schema(
     },
     visible: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   {
