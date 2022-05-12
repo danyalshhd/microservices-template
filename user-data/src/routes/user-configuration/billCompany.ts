@@ -24,10 +24,16 @@ router.post(
         'Company with this companyName is already present.'
       );
     }
-    const company = BillCompany.build({ companyName, paymentType, billCategory, billAccount });
+    const company = BillCompany.build({
+      companyName,
+      paymentType,
+      billCategory,
+      billAccount,
+    });
     await company.save();
-    await company.populate({path: 'billCategory'})
-    res.status(201).send(company);
+    await company.populate({ path: 'billCategory' });
+    let response = { results: { message: 'SUCCESS', data: company } };
+    res.status(201).send(response);
   }
 );
 
@@ -46,8 +52,11 @@ router.get(
       companyName && (queryObj.companyName = companyName);
       paymentType && (queryObj.paymentType = paymentType);
       category && (queryObj.category = category);
-      let companies = await BillCompany.find(queryObj).populate({path:'billCategory'});
-      res.send(companies);
+      let companies = await BillCompany.find(queryObj).populate({
+        path: 'billCategory',
+      });
+      let response = { results: { message: 'SUCCESS', dataItems: companies } };
+      res.send(response);
     } catch (error) {
       throw new BadRequestError('Unable to retrieve Companies.');
     }
@@ -76,11 +85,12 @@ router.put(
         {
           new: true,
         }
-      ).populate({path:'billCategory'});
+      ).populate({ path: 'billCategory' });
       if (!updatedCompany) {
         throw new Error();
       }
-      res.send(updatedCompany);
+      let response = { results: { message: 'SUCCESS', data: updatedCompany } };
+      res.send(response);
     } catch (error) {
       throw new BadRequestError('Unable to update Company.');
     }
@@ -95,7 +105,8 @@ router.delete(
     try {
       const { id } = req.body;
       const deletedCompany = await BillCompany.deleteOne({ _id: id });
-      res.send(deletedCompany);
+      let response = { results: { message: 'SUCCESS', data: deletedCompany } };
+      res.send(response);
     } catch (error) {
       throw new BadRequestError('Unable to delete Company.');
     }
