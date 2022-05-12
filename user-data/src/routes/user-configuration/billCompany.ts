@@ -104,7 +104,10 @@ router.delete(
   async (req: Request, res: Response) => {
     try {
       const { id } = req.body;
-      const deletedCompany = await BillCompany.deleteOne({ _id: id });
+      const deletedCompany = await BillCompany.findOneAndDelete({ _id: id });
+      if (!deletedCompany) {
+        throw new Error();
+      }
       let response = { results: { message: 'SUCCESS', data: deletedCompany } };
       res.send(response);
     } catch (error) {
