@@ -11,7 +11,6 @@ let region = process.env.AWS_BUCKET_REGION;
 let accessKeyId = process.env.ACCESS_KEY_ID;
 let secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 
-const router = express.Router();
 const upload = multer({
   storage: multer.diskStorage({
     // filename: function (req, file, cb) {
@@ -45,4 +44,4 @@ function uploadFile(file: any) {
   return s3.upload(uploadParams).promise();
 }
 
-export { uploadFile};
+export { uploadFile };

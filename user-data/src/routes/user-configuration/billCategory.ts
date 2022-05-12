@@ -77,6 +77,7 @@ router.delete(
   async (req: Request, res: Response) => {
     try {
       const { id } = req.body;
+      //all associated companies with the category will also be deleted.
       const deletedBillCategory = await BillCategory.findOneAndDelete({
         _id: id,
       });

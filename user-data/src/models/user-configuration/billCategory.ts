@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { BillCompany } from './billCompany';
 
 // An interface that describes the properties
 // that are requried to create a new User
@@ -39,6 +40,15 @@ const BillCategorySchema = new mongoose.Schema(
 BillCategorySchema.statics.build = (attrs: BillCategoryAttrs) => {
   return new BillCategory(attrs);
 };
+
+BillCategorySchema.post('findOneAndDelete', async function (doc) {
+  if (doc) {
+    const deleteResult = await BillCompany.deleteMany({
+      billCategory: doc._id,
+    });
+    console.log('Child delete result: ', deleteResult);
+  }
+});
 
 const BillCategory = mongoose.model<BillCategoryDoc, BillCategoryModel>(
   'BillCategory',
