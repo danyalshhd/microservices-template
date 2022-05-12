@@ -47,11 +47,11 @@ router.get(
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { companyName, paymentType, category } = req.body;
+      const { companyName, paymentType, billCategory } = req.body;
       let queryObj: any = {};
       companyName && (queryObj.companyName = companyName);
       paymentType && (queryObj.paymentType = paymentType);
-      category && (queryObj.category = category);
+      billCategory && (queryObj.billCategory = billCategory);
       let companies = await BillCompany.find(queryObj).populate({
         path: 'billCategory',
       });
