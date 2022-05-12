@@ -22,13 +22,10 @@ router.post(
 
 router.get(
   '/api/product/secretQuestion',
-  [body('question').optional().isString()],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { question } = req.body;
       let queryObj: any = {};
-      question && (queryObj.question = question);
       let secretQuestions = await SecretQuestion.find(queryObj);
       res.send(secretQuestions);
     } catch (error) {

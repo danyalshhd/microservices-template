@@ -1,6 +1,6 @@
 import { BadRequestError, validateRequest } from '@dstransaction/common';
 import express, { Request, Response } from 'express';
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 import { BillCategory } from '../../models/user-configuration/billCategory';
 const router = express.Router();
 
@@ -23,11 +23,11 @@ router.post(
 
 router.get(
   '/api/product/billCategory',
-  [body('categoryName').optional().isString()],
+  [query('categoryName').optional().isString()],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { categoryName } = req.body;
+      const { categoryName } = req.query;
       let queryObj: any = {};
       categoryName && (queryObj.categoryName = categoryName);
       let billCategories = await BillCategory.find(queryObj);

@@ -22,13 +22,10 @@ router.post(
 
 router.get(
   '/api/product/faq',
-  [body('question').optional().isString()],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { question } = req.body;
       let queryObj: any = {};
-      question && (queryObj.question = question);
       let faqs = await FAQ.find(queryObj);
       res.send(faqs);
     } catch (error) {

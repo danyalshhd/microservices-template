@@ -1,6 +1,6 @@
 import { BadRequestError, validateRequest } from '@dstransaction/common';
 import express, { Request, Response } from 'express';
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 import { Parish } from '../../models/user-configuration/parish';
 import { Town } from '../../models/user-configuration/town';
 const router = express.Router();
@@ -28,11 +28,11 @@ router.post(
 
 router.get(
   '/api/product/address',
-  [body('parishName').optional().isString()],
+  [query('parishName').optional().isString()],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { parishName } = req.body;
+      const { parishName } = req.query;
       let queryObj: any = {};
       parishName && (queryObj.parishName = parishName);
       let addresses = await Parish.find(queryObj);

@@ -1,6 +1,6 @@
 import { BadRequestError, validateRequest } from '@dstransaction/common';
 import express, { Request, Response } from 'express';
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 import { Country } from '../../models/user-configuration/country';
 const router = express.Router();
 
@@ -34,7 +34,7 @@ router.get(
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { countryName, countryCode, phonePrefix, visible } = req.body;
+      const { countryName, countryCode, phonePrefix, visible } = req.query;
       let queryObj: any = {};
       countryName && (queryObj.countryName = countryName);
       countryCode && (queryObj.countryCode = countryCode);

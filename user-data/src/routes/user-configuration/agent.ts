@@ -1,6 +1,6 @@
 import { BadRequestError, validateRequest } from '@dstransaction/common';
 import express, { Request, Response } from 'express';
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 import { Agent } from '../../models/user-configuration/agent';
 const router = express.Router();
 
@@ -128,21 +128,19 @@ router.post(
 router.get(
   '/api/product/agent',
   [
-    body('agentName').optional().isString(),
-    body('agentId').optional().isString(),
-    body('bankId').optional().isString(),
-    body('rating').optional().isNumeric(),
+    query('agentName').optional().isString(),
+    query('agentId').optional().isString(),
+    query('bankId').optional().isString(),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { agentName, agentId, bankId, rating, parish, town } = req.body;
+      const { agentName, agentId, bankId, parish, town } = req.query;
       let queryObj: any = {};
       let address: any = {};
       agentName && (queryObj.agentName = agentName);
       agentId && (queryObj.agentId = agentId);
       bankId && (queryObj.bankId = bankId);
-      rating && (queryObj.rating = rating);
       parish && (address.parish = parish);
       town && (address.town = town);
       Object.keys(address).length > 0 && (queryObj.address = address);
@@ -151,16 +149,6 @@ router.get(
     } catch (error) {
       throw new BadRequestError('Unable to retrieve Agents.');
     }
-  }
-);
-
-router.post(
-  '/api/product/bulkAgent',
-  [body('agents').isArray()],
-  validateRequest,
-  async (req: Request, res: Response) => {
-    try {
-    } catch (error) {}
   }
 );
 

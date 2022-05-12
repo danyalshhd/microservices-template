@@ -1,6 +1,6 @@
 import { BadRequestError, validateRequest } from '@dstransaction/common';
 import express, { Request, Response } from 'express';
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 import { PortalUser } from '../../models/user-configuration/portalUser';
 const router = express.Router();
 
@@ -26,14 +26,14 @@ router.post(
 router.get(
   '/api/product/user',
   [
-    body('name').optional().isString(),
-    body('email').optional().isString(),
-    body('role').optional().isString(),
+    query('name').optional().isString(),
+    query('email').optional().isString(),
+    // query('role').optional().isString(),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { name, email} = req.body;
+      const { name, email } = req.query;
       let queryObj: any = {};
       name && (queryObj.name = name);
       email && (queryObj.email = email);

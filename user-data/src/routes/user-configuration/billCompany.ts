@@ -1,6 +1,6 @@
 import { BadRequestError, validateRequest } from '@dstransaction/common';
 import express, { Request, Response } from 'express';
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
 import { BillCompany } from '../../models/user-configuration/billCompany';
 const router = express.Router();
 
@@ -40,14 +40,15 @@ router.post(
 router.get(
   '/api/product/billCompany',
   [
-    body('companyName').optional().isString(),
-    body('paymentType').optional().isString(),
-    body('billCategory').optional().isString(),
+    query('companyName').optional().isString(),
+    query('paymentType').optional().isString(),
+    query('billCategory').optional().isString(),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { companyName, paymentType, billCategory } = req.body;
+      console.log('the query body is ', req.query);
+      const { companyName, paymentType, billCategory } = req.query;
       let queryObj: any = {};
       companyName && (queryObj.companyName = companyName);
       paymentType && (queryObj.paymentType = paymentType);
@@ -69,16 +70,19 @@ router.put(
     body('id').isString(),
     body('companyName').optional().isString(),
     body('paymentType').optional().isString(),
+    body('billAccount').optional().isString(),
     body('billCategory').optional().isString(),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
     try {
-      const { id, companyName, paymentType, billCategory } = req.body;
+      const { id, companyName, paymentType, billCategory, billAccount } =
+        req.body;
       let updateObj: any = {};
       companyName != null && (updateObj.companyName = companyName);
       paymentType != null && (updateObj.paymentType = paymentType);
       billCategory != null && (updateObj.billCategory = billCategory);
+      billAccount != null && (updateObj.billAccount = billAccount);
       const updatedCompany = await BillCompany.findOneAndUpdate(
         { _id: id },
         updateObj,
